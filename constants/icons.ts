@@ -11,6 +11,11 @@ const icons = {
   bookmark: require("../assets/icons/bookmark.png"),
   heart: require("../assets/icons/heart.png"),
   comment: require("../assets/icons/comment.png"),
+  pin: require("../assets/icons/pin.png"),
+  peso: require("../assets/icons/peso.png"),
+  next: require("../assets/icons/next.png"),
+  down: require("../assets/icons/down.png"),
+  x: require("../assets/icons/x.png"),
   "heart-fill": require("../assets/icons/heart-fill.png"),
   "bookmark-fill": require("../assets/icons/bookmark-fill.png"),
 };

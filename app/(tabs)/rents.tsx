@@ -9,16 +9,21 @@ import {
   Animated,
   TouchableWithoutFeedback,
   StyleSheet,
+  Pressable,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import icons from "../../constants/icons";
-import images from "../../constants/images";
 import { posts } from "../../constants/data";
 import { getRelativeTime } from "../../utils/formatTime";
+import { formatCount } from "../../utils/formatCount";
+import FilterModal from "../../components/FilterModal";
 
 const Rents = () => {
   const [hasHearted, setHasHearted] = useState(false);
   const [hasBookmarked, setHasBookmarked] = useState(false);
+  const [fullDescription, setFullDescription] = useState(false);
+  const [isVisibleFilterModal, setIsVisibleFilterModal] = useState(false);
+  const [isFiltering, setIsFiltering] = useState(false);
 
   const scale = useRef(new Animated.Value(1)).current;
 
@@ -44,7 +49,16 @@ const Rents = () => {
 
   return (
     <View className="flex-1 bg-backgroundColor pt-2">
-      <Header />
+      <Header
+        isFiltering={isFiltering}
+        setIsVisibleFilterModal={setIsVisibleFilterModal}
+      />
+      {isVisibleFilterModal && (
+        <FilterModal
+          setIsFiltering={setIsFiltering}
+          setIsVisibleFilterModal={setIsVisibleFilterModal}
+        />
+      )}
       <ScrollView>
         <View className="px-4 flex flex-col gap-5 mb-24">
           {posts.map((post, i) => (
@@ -54,9 +68,16 @@ const Rents = () => {
             >
               <View className="w-full justify-between flex-row items-center">
                 <View className="flex flex-col">
-                  <Text className="text-zinc-300 font-rSemibold text-lg">
-                    {post.username}
-                  </Text>
+                  <View className="flex-row items-center gap-1.5">
+                    <Text className="text-zinc-300 font-rSemibold text-lg">
+                      {post.username}
+                    </Text>
+                    <TouchableOpacity className="bg-primary px-2 py-1 rounded-md">
+                      <Text className="text-zinc-300 font-rSemibold text-xs">
+                        Message
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
                   <Text className="text-zinc-500 font-rRegular text-sm">
                     {getRelativeTime(post.createdAt)}
                   </Text>
@@ -70,11 +91,41 @@ const Rents = () => {
                 </TouchableOpacity>
               </View>
 
-              <Text className="text-zinc-300 font-rRegular">
-                {post.description.length > 200
-                  ? post.description.slice(0, 200).concat("...")
-                  : post.description}
-              </Text>
+              <View className="flex-col gap-1">
+                <View className="flex-row gap-1 items-center">
+                  <Image
+                    source={icons.peso}
+                    tintColor={"#7862BF"}
+                    className="h-5 w-5"
+                    resizeMode="contain"
+                  />
+                  <Text className="text-zinc-500 font-rRegular text-sm">
+                    {post.price !== null
+                      ? `${formatCount(post.price)}/month`
+                      : "???"}
+                  </Text>
+                </View>
+
+                <View className="flex-row gap-1 items-center">
+                  <Image
+                    source={icons.pin}
+                    tintColor={"#7862BF"}
+                    className="h-5 w-5"
+                    resizeMode="contain"
+                  />
+                  <Text className="text-zinc-500 font-rRegular text-sm">
+                    {post.address.length > 40
+                      ? post.address.slice(0, 40).concat("...")
+                      : post.address}
+                  </Text>
+                </View>
+
+                <Text className="text-zinc-300 font-rRegular">
+                  {post.description.length > 100
+                    ? post.description.slice(0, 100).concat("...")
+                    : post.description}
+                </Text>
+              </View>
 
               {post.images_url.length === 1 && (
                 <PostImage image={post.images_url[0]} />
@@ -95,13 +146,13 @@ const Rents = () => {
                             hasHearted ? icons["heart-fill"] : icons.heart
                           }
                           tintColor={hasHearted ? "#7862BF" : "#848483"}
-                          className="h-[1.7rem] w-[1.7rem]"
+                          className="h-5 w-5"
                           resizeMode="contain"
                         />
                       </Animated.View>
                     </TouchableWithoutFeedback>
                     <Text className="text-zinc-500 font-rRegular text-sm">
-                      500
+                      {formatCount(post.heart_count)}
                     </Text>
                   </View>
 
@@ -109,24 +160,23 @@ const Rents = () => {
                     <Image
                       source={icons.comment}
                       tintColor={"#848483"}
-                      className="h-6 w-6"
+                      className="h-5 w-5"
                     />
                     <Text className="text-zinc-500 font-rRegular text-sm">
-                      500
+                      {formatCount(post.comment_count)}
                     </Text>
                   </View>
-
-                  <Image
-                    source={icons.bookmark}
-                    tintColor={"#848483"}
-                    className="h-5 w-5"
-                  />
                 </View>
 
-                <TouchableOpacity className="bg-primary px-2 py-1 rounded-md">
-                  <Text className="text-zinc-300 font-rSemibold text-xs">
-                    Contact Owner
+                <TouchableOpacity className="flex-row items-center">
+                  <Text className="text-zinc-500 font-rRegular text-sm">
+                    Evaluation Result
                   </Text>
+                  <Image
+                    source={icons.next}
+                    tintColor={"#71717a"}
+                    className="h-4 w-4"
+                  />
                 </TouchableOpacity>
               </View>
             </View>
@@ -137,7 +187,13 @@ const Rents = () => {
   );
 };
 
-function Header() {
+function Header({
+  isFiltering,
+  setIsVisibleFilterModal,
+}: {
+  isFiltering: boolean;
+  setIsVisibleFilterModal: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   return (
     <View className="w-full px-4 flex-row items-center justify-between mb-4">
       <Text className="text-zinc-300 font-rBold text-3xl">Rents</Text>
@@ -162,13 +218,20 @@ function Header() {
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity className="flex-row items-center gap-1 border border-icon-stroke rounded-full py-1 px-2">
+        <TouchableOpacity
+          onPress={() => setIsVisibleFilterModal((prev) => !prev)}
+          className={`flex-row items-center gap-1 border rounded-full py-1 px-2 ${isFiltering ? "border-primary" : "border-icon-stroke"}`}
+        >
           <Image
             source={icons.filter}
-            tintColor="#848483"
+            tintColor={isFiltering ? "#7862BF" : "#848483"}
             className="h-4 w-4"
           />
-          <Text className="text-icon-stroke text-xs font-rRegular">Filter</Text>
+          <Text
+            className={`text-icon-stroke text-xs font-rRegular ${isFiltering ? "text-primary" : "text-icon-stroke"}`}
+          >
+            Filter
+          </Text>
         </TouchableOpacity>
       </View>
     </View>

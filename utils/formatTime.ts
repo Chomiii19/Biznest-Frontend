@@ -1,7 +1,7 @@
-import { formatDistanceToNowStrict, parseISO, isValid } from "date-fns";
+import { formatDistanceToNowStrict, isValid } from "date-fns";
 
 export function getRelativeTime(dateInput: string | Date): string {
-  const date = typeof dateInput === "string" ? parseISO(dateInput) : dateInput;
+  const date = typeof dateInput === "string" ? new Date(dateInput) : dateInput;
 
   if (!isValid(date)) return "Invalid date";
 
