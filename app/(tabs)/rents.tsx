@@ -48,7 +48,7 @@ const Rents = () => {
   };
 
   return (
-    <View className="flex-1 bg-backgroundColor pt-2">
+    <View className="flex-1 bg-backgroundColor">
       <Header
         isFiltering={isFiltering}
         setIsVisibleFilterModal={setIsVisibleFilterModal}
@@ -195,7 +195,7 @@ function Header({
   setIsVisibleFilterModal: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   return (
-    <View className="w-full px-4 flex-row items-center justify-between mb-4">
+    <View className="w-full px-4 flex-row items-center justify-between mb-4 mt-2">
       <Text className="text-zinc-300 font-rBold text-3xl">Rents</Text>
 
       <View className="flex-row items-center gap-3">
