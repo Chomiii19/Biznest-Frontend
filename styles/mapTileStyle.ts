@@ -1,4 +1,4 @@
-export default [
+export const mapTileStyleLight = [
   {
     elementType: "geometry",
     stylers: [
@@ -156,5 +156,59 @@ export default [
         color: "#9e9e9e",
       },
     ],
+  },
+];
+
+export const mapTileStyleDark = [
+  {
+    elementType: "geometry",
+    stylers: [{ color: "#212121" }],
+  },
+  {
+    elementType: "labels.icon",
+    stylers: [{ visibility: "off" }],
+  },
+  {
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#757575" }],
+  },
+  {
+    elementType: "labels.text.stroke",
+    stylers: [{ color: "#212121" }],
+  },
+  {
+    featureType: "administrative",
+    elementType: "geometry",
+    stylers: [{ color: "#757575" }],
+  },
+  {
+    featureType: "poi",
+    elementType: "geometry",
+    stylers: [{ color: "#2e2e2e" }],
+  },
+  {
+    featureType: "poi.park",
+    elementType: "geometry",
+    stylers: [{ color: "#263c3f" }],
+  },
+  {
+    featureType: "road",
+    elementType: "geometry",
+    stylers: [{ color: "#383838" }],
+  },
+  {
+    featureType: "road.arterial",
+    elementType: "geometry",
+    stylers: [{ color: "#414141" }],
+  },
+  {
+    featureType: "road.highway",
+    elementType: "geometry",
+    stylers: [{ color: "#616161" }],
+  },
+  {
+    featureType: "water",
+    elementType: "geometry",
+    stylers: [{ color: "#0a0a0a" }],
   },
 ];

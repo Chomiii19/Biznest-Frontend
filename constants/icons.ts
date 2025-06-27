@@ -4,6 +4,15 @@ const icons = {
   rent: require("../assets/icons/rent-fill.png"),
   locate: require("../assets/icons/locate.png"),
   profile: require("../assets/icons/user-fill.png"),
+  filter: require("../assets/icons/filter.png"),
+  addition: require("../assets/icons/addition.png"),
+  search: require("../assets/icons/search.png"),
+  more: require("../assets/icons/more.png"),
+  bookmark: require("../assets/icons/bookmark.png"),
+  heart: require("../assets/icons/heart.png"),
+  comment: require("../assets/icons/comment.png"),
+  "heart-fill": require("../assets/icons/heart-fill.png"),
+  "bookmark-fill": require("../assets/icons/bookmark-fill.png"),
 };
 
 export default icons;

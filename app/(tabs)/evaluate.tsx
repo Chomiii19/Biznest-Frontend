@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet } from "react-native";
 import React from "react";
 import MapView from "react-native-maps";
-import mapTileStyle from "../../styles/mapTileStyle";
+import { mapTileStyleLight, mapTileStyleDark } from "../../styles/mapTileStyle";
 
 const Evaluate = () => {
   return (
@@ -9,7 +9,7 @@ const Evaluate = () => {
       <MapView
         provider="google"
         style={styles.map}
-        customMapStyle={mapTileStyle}
+        customMapStyle={mapTileStyleDark}
         userInterfaceStyle="dark"
         initialRegion={{
           latitude: 14.5869,
