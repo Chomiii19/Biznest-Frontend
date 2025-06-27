@@ -8,7 +8,7 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({
   navigation,
 }) => {
   return (
-    <View className="flex-row w-[22rem] justify-between bg-light-black rounded-full p-1 self-center bottom-4 gap-5 absolute elevation-lg border-zinc-800 border">
+    <View className="flex-row w-[22rem] justify-between bg-light-black rounded-full p-1 self-center bottom-4 gap-5 absolute elevation-xl border-zinc-800 border">
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const icon = options.tabBarLabel as keyof typeof icons;
