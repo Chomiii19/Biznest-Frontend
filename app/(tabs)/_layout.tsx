@@ -1,5 +1,6 @@
 import { Tabs } from "expo-router";
 import BottomTabBar from "../../components/BottomTabBar";
+import { BottomSheetProvider } from "../../context/bottomSheetContext";
 
 function TabsLayout() {
   return (

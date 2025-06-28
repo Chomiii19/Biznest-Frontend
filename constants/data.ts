@@ -178,3 +178,213 @@ export const biznestScore = [
   "Average (50–69)",
   "Low (below 50)",
 ];
+
+export const comments = [
+  {
+    username: "jane_doe88",
+    createdAt: "2025-06-25T10:23:00Z",
+    text: "Hi! Is this spot still available for rent? I'm looking for a space in Quezon City.",
+    upvote_count: 12,
+    replies: [
+      {
+        username: "propertyfinderPH",
+        createdAt: "2025-06-25T11:00:00Z",
+        text: "Yes, it's still available! DM sent 😊",
+        upvote_count: 5,
+      },
+    ],
+  },
+  {
+    username: "bizmanila2024",
+    createdAt: "2025-06-24T14:47:00Z",
+    text: "How much is the monthly rental for this space?",
+    upvote_count: 34,
+    replies: [
+      {
+        username: "makatibroker",
+        createdAt: "2025-06-24T15:05:00Z",
+        text: "Hi! It's ₱25,000/month excluding utilities. Let me know if you'd like a tour.",
+        upvote_count: 18,
+      },
+      {
+        username: "realestateph",
+        createdAt: "2025-06-24T15:45:00Z",
+        text: "Utilities are billed separately depending on usage.",
+        upvote_count: 10,
+      },
+    ],
+  },
+  {
+    username: "foodielauncher",
+    createdAt: "2025-06-22T08:12:00Z",
+    text: "Is this lot near foot traffic areas? Planning to open a small café in Taguig.",
+    upvote_count: 19,
+    replies: [
+      {
+        username: "taguigspaces",
+        createdAt: "2025-06-22T09:00:00Z",
+        text: "Yes, very close to Market! Market! and BGC High Street.",
+        upvote_count: 9,
+      },
+    ],
+  },
+  {
+    username: "startupqueen",
+    createdAt: "2025-06-20T17:30:00Z",
+    text: "Do you allow short-term leases? Looking to test my business for 3 months in Pasig.",
+    upvote_count: 22,
+    replies: [
+      {
+        username: "pasiglease",
+        createdAt: "2025-06-20T18:10:00Z",
+        text: "We do! Minimum lease is 2 months. Message me for terms.",
+        upvote_count: 13,
+      },
+    ],
+  },
+  {
+    username: "kuya_negosyo",
+    createdAt: "2025-06-19T20:45:00Z",
+    text: "Pwede ba ito gawing laundry shop? Gaano kalawak ang space?",
+    upvote_count: 40,
+    replies: [
+      {
+        username: "manila_rentals",
+        createdAt: "2025-06-19T21:05:00Z",
+        text: "Yes, maraming gumagawa ng laundromat diyan. Space is 35sqm.",
+        upvote_count: 17,
+      },
+    ],
+  },
+  {
+    username: "mompreneurlife",
+    createdAt: "2025-06-18T08:50:00Z",
+    text: "Hi! Is this ideal for a small play café? I’m looking for a child-friendly area in QC.",
+    upvote_count: 17,
+    replies: [],
+  },
+  {
+    username: "pandesalhunter",
+    createdAt: "2025-06-17T13:20:00Z",
+    text: "May sariling CR ba 'to? Planning to rent for a bakery stall.",
+    upvote_count: 23,
+    replies: [
+      {
+        username: "lotfinderPH",
+        createdAt: "2025-06-17T13:50:00Z",
+        text: "Yes po, may sariling restroom sa likod ng unit.",
+        upvote_count: 6,
+      },
+    ],
+  },
+  {
+    username: "tinderaQueen",
+    createdAt: "2025-06-16T11:45:00Z",
+    text: "Ilang months advance ang kailangan? May deposit din ba?",
+    upvote_count: 29,
+    replies: [
+      {
+        username: "rentalsPH",
+        createdAt: "2025-06-16T12:10:00Z",
+        text: "Usually 2 months advance + 1 month deposit. Negotiable for small businesses.",
+        upvote_count: 11,
+      },
+      {
+        username: "quickspace",
+        createdAt: "2025-06-16T12:25:00Z",
+        text: "Nag-ooffer kami ng 1-month advance lang for startups.",
+        upvote_count: 7,
+      },
+      {
+        username: "bizguide",
+        createdAt: "2025-06-16T12:45:00Z",
+        text: "Tip: Always request a written contract to protect both parties.",
+        upvote_count: 14,
+      },
+    ],
+  },
+  {
+    username: "freelance_studio",
+    createdAt: "2025-06-15T16:30:00Z",
+    text: "Is this unit soundproof or can it be used as a mini recording studio?",
+    upvote_count: 14,
+    replies: [],
+  },
+  {
+    username: "plantita_mnl",
+    createdAt: "2025-06-14T07:40:00Z",
+    text: "Is there natural light here? Planning a small plant shop.",
+    upvote_count: 10,
+    replies: [
+      {
+        username: "metroagents",
+        createdAt: "2025-06-14T08:05:00Z",
+        text: "Yes! There's a large front window with good morning sunlight.",
+        upvote_count: 5,
+      },
+    ],
+  },
+  {
+    username: "deliveryexpressph",
+    createdAt: "2025-06-13T19:22:00Z",
+    text: "Pwede ba for logistics hub? May daanan ng truck?",
+    upvote_count: 21,
+    replies: [
+      {
+        username: "leasingmanila",
+        createdAt: "2025-06-13T20:00:00Z",
+        text: "Oo, along a main road and accessible for trucks.",
+        upvote_count: 8,
+      },
+    ],
+  },
+  {
+    username: "sidehustler",
+    createdAt: "2025-06-12T10:12:00Z",
+    text: "Safe ba dito sa gabi? Planning to open a milk tea shop open till 10PM.",
+    upvote_count: 18,
+    replies: [],
+  },
+  {
+    username: "trendingnowmnl",
+    createdAt: "2025-06-11T14:55:00Z",
+    text: "Is this inside a mall or roadside? Need good visibility for walk-ins.",
+    upvote_count: 27,
+    replies: [
+      {
+        username: "spacehunter",
+        createdAt: "2025-06-11T15:10:00Z",
+        text: "Roadside frontage! Beside a convenience store.",
+        upvote_count: 4,
+      },
+    ],
+  },
+  {
+    username: "budgetbiz",
+    createdAt: "2025-06-10T09:30:00Z",
+    text: "Kaya ba to sa budget 10k per month? Looking for startup stall lang.",
+    upvote_count: 35,
+    replies: [
+      {
+        username: "affordablerentsph",
+        createdAt: "2025-06-10T09:50:00Z",
+        text: "Meron po kaming units na pasok sa 10k. Please DM 😊",
+        upvote_count: 10,
+      },
+    ],
+  },
+  {
+    username: "techkubo",
+    createdAt: "2025-06-09T18:00:00Z",
+    text: "Hi! Is there WiFi included or fiber-ready at least?",
+    upvote_count: 11,
+    replies: [
+      {
+        username: "wiredplaces",
+        createdAt: "2025-06-09T18:22:00Z",
+        text: "Fiber-ready na po, Globe and Converge available.",
+        upvote_count: 3,
+      },
+    ],
+  },
+];
