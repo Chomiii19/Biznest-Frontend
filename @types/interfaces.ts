@@ -12,3 +12,8 @@ export interface IReplies {
   text: string;
   upvote_count: number;
 }
+
+export interface ICoords {
+  latitude: number;
+  longitude: number;
+}

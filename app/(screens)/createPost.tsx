@@ -7,14 +7,21 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import icons from "../../constants/icons";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { TextInput } from "react-native-gesture-handler";
 import ImageResolution from "../../components/ImageResolution";
+import reverseGeocode from "../../utils/reverseGeocode";
 
 const CreatePost = () => {
   const [image, setImage] = useState<string | null>(null);
+  const { selectedAddress } = useLocalSearchParams();
+  const [address, setAddress] = useState("");
+
+  useEffect(() => {
+    setAddress(selectedAddress as string);
+  }, [selectedAddress]);
 
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -65,15 +72,38 @@ const CreatePost = () => {
         </View>
 
         <View className="w-full flex-col">
-          <TouchableOpacity className="flex-row gap-3 items-center border-y border-y-zinc-800 px-4 py-2">
-            <Image
-              source={icons["pin-fill"]}
-              resizeMode="contain"
-              className="h-7 w-7"
-            />
-            <Text className="text-zinc-500 font-rRegular text-lg">
-              Select Location
-            </Text>
+          <TouchableOpacity
+            onPress={() => router.push("/selectLocation")}
+            className="flex-row justify-between items-center border-y border-y-zinc-800 px-4 py-2"
+          >
+            <View className="gap-3 flex-row items-center">
+              <Image
+                source={icons["pin-fill"]}
+                resizeMode="contain"
+                className="h-6 w-6"
+                tintColor={"#ef4444"}
+              />
+              <Text
+                className={`font-rRegular text-lg ${address ? "text-primary" : "text-zinc-500"}`}
+              >
+                {address
+                  ? address.length > 35
+                    ? address.slice(0, 35).concat("...")
+                    : address
+                  : "Select Location"}
+              </Text>
+            </View>
+
+            {address && (
+              <TouchableOpacity onPress={() => setAddress("")}>
+                <Image
+                  source={icons.x}
+                  className="h-5 w-5"
+                  resizeMode="contain"
+                  tintColor={"#7862BF"}
+                />
+              </TouchableOpacity>
+            )}
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -120,7 +150,7 @@ function Header() {
   return (
     <View className="w-full flex-row justify-between items-center px-4 p-2 border-b border-b-zinc-800">
       <View className="flex-row gap-1 items-center">
-        <TouchableOpacity onPress={() => router.back()}>
+        <TouchableOpacity onPress={() => router.push("/(tabs)/rents")}>
           <Image
             source={icons.next}
             className="h-7 w-7 -scale-x-[1]"
