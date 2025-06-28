@@ -161,9 +161,14 @@ function Header() {
         <Text className="text-zinc-300 font-rBold text-2xl">Create Post</Text>
       </View>
 
-      <TouchableOpacity className="px-3 py-1 rounded-lg bg-primary">
-        <Text className="text-zinc-300 font-rSemibold text-sm">Post</Text>
-      </TouchableOpacity>
+      <View className="flex-row gap-3 items-center">
+        <TouchableOpacity>
+          <Text className="text-zinc-500 font-rRegular text-sm">Save</Text>
+        </TouchableOpacity>
+        <TouchableOpacity className="px-3 py-1 rounded-lg bg-primary">
+          <Text className="text-zinc-300 font-rSemibold text-sm">Post</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
