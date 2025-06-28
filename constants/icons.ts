@@ -19,6 +19,7 @@ const icons = {
   send: require("../assets/icons/send.png"),
   arrowUp: require("../assets/icons/arrowUp.png"),
   "heart-fill": require("../assets/icons/heart-fill.png"),
+  "pin-fill": require("../assets/icons/pin-fill.png"),
   "arrowUp-fill": require("../assets/icons/arrowUp-fill.png"),
   "bookmark-fill": require("../assets/icons/bookmark-fill.png"),
 };
