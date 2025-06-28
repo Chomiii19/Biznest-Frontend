@@ -87,7 +87,6 @@ function BottomSheetComponent() {
                     isUpvoted={upvotedComments.has(commentId)}
                     onToggleUpvote={() => toggleUpvote(commentId)}
                     onToggleReplies={() => toggleReplies(i, comment.username)}
-                    setReplyingTo={setReplyingTo}
                   />
 
                   {openReplies.has(i) && (
@@ -103,7 +102,6 @@ function BottomSheetComponent() {
                               isUpvoted={upvotedComments.has(replyId)}
                               onToggleUpvote={() => toggleUpvote(replyId)}
                               onToggleReplies={() => {}}
-                              setReplyingTo={setReplyingTo}
                             />
                           );
                         })}
@@ -162,14 +160,12 @@ function CommentComponent({
   isUpvoted,
   onToggleUpvote,
   onToggleReplies,
-  setReplyingTo,
 }: {
   type: string;
   comment: IComments | undefined;
   isUpvoted: boolean;
   onToggleUpvote: () => void;
   onToggleReplies: () => void;
-  setReplyingTo: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const scale = useRef(new Animated.Value(1)).current;
 
