@@ -17,6 +17,7 @@ import { getRelativeTime } from "../../utils/formatTime";
 import { formatCount } from "../../utils/formatCount";
 import FilterModal from "../../components/FilterModal";
 import { useBottomSheet } from "../../context/bottomSheetContext";
+import { router } from "expo-router";
 
 const Rents = () => {
   const [isVisibleFilterModal, setIsVisibleFilterModal] = useState(false);
@@ -217,7 +218,10 @@ function Header({
           />
         </TouchableOpacity>
 
-        <TouchableOpacity className="flex-row items-center gap-1 border border-icon-stroke rounded-full py-1 px-2">
+        <TouchableOpacity
+          onPress={() => router.push("/(screens)/createPost")}
+          className="flex-row items-center gap-1 border border-icon-stroke rounded-full py-1 px-2"
+        >
           <Image
             source={icons.addition}
             tintColor="#848483"
