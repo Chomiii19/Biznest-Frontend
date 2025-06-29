@@ -22,7 +22,7 @@ import { useBottomSheet } from "../context/bottomSheetContext";
 import { PlatformPressable } from "@react-navigation/elements";
 import renderBackdrop from "./BottomSheetBackdrop";
 
-function BottomSheetComponent() {
+function CommentBottomSheet() {
   const { bottomSheetRef, snapPoints, comments, postOwner } = useBottomSheet();
   const [createComment, setCreateComment] = useState("");
   const [upvotedComments, setUpvotedComments] = useState<Set<string>>(
@@ -246,7 +246,7 @@ function CommentComponent({
   );
 }
 
-export default BottomSheetComponent;
+export default CommentBottomSheet;
 
 const styles = StyleSheet.create({
   iconContainer: {
