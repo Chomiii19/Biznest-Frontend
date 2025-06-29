@@ -4,7 +4,8 @@ import { useFonts } from "expo-font";
 import { useEffect } from "react";
 import * as SystemUI from "expo-system-ui";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { BottomSheetProvider } from "../context/bottomSheetContext";
+import { CommentBottomSheetProvider } from "../context/commentBottomSheetContext";
+import { EvaluateBottomSheetProvider } from "../context/evaluateBottomSheetContext";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -35,12 +36,14 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView className="flex-1">
-      <BottomSheetProvider>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="(screens)" options={{ headerShown: false }} />
-        </Stack>
-      </BottomSheetProvider>
+      <EvaluateBottomSheetProvider>
+        <CommentBottomSheetProvider>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="(screens)" options={{ headerShown: false }} />
+          </Stack>
+        </CommentBottomSheetProvider>
+      </EvaluateBottomSheetProvider>
     </GestureHandlerRootView>
   );
 }

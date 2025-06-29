@@ -4,23 +4,29 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
-  TextInput,
   Keyboard,
   TouchableWithoutFeedback,
+  NativeSyntheticEvent,
+  TextInputSubmitEditingEventData,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import MapView, { MapPressEvent, Marker } from "react-native-maps";
+import React, { useEffect, useRef, useState } from "react";
+import MapView, {
+  LongPressEvent,
+  MapPressEvent,
+  Marker,
+} from "react-native-maps";
 import * as Location from "expo-location";
 import { mapTileStyleLight, mapTileStyleDark } from "../../styles/mapTileStyle";
 import { router } from "expo-router";
 import icons from "../../constants/icons";
 import { ICoords } from "../../@types/interfaces";
 import reverseGeocode from "../../utils/reverseGeocode";
+import SearchBar from "../../components/SearchBar";
+import forwardGeocoding from "../../utils/forwardGeocode";
+import ShowUserLocation from "../../components/ShowUserLocation";
 
 const SelectLocation = () => {
-  const [location, setLocation] = useState<Location.LocationObject | null>(
-    null
-  );
+  const mapRef = useRef<MapView | null>(null);
   const [selectedLocation, setSelectedLocation] = useState<ICoords | null>(
     null
   );
@@ -35,16 +41,41 @@ const SelectLocation = () => {
         return;
       }
 
-      const currentLocation = await Location.getCurrentPositionAsync({});
-      setLocation(currentLocation);
+      focusUserLocation();
     })();
   }, []);
 
-  const handleSelectedLocation = async (e: MapPressEvent) => {
+  const focusUserLocation = async () => {
+    const { coords } = await Location.getCurrentPositionAsync({});
+    animateTo(coords.latitude, coords.longitude);
+  };
+
+  const animateTo = (lat: number, lng: number) => {
+    mapRef.current?.animateToRegion(
+      {
+        latitude: lat - 0.0003,
+        longitude: lng,
+        latitudeDelta: 0.001,
+        longitudeDelta: 0.001,
+      },
+      500
+    );
+  };
+
+  const handleSearchedLocation = async (
+    e: NativeSyntheticEvent<TextInputSubmitEditingEventData>
+  ) => {
+    const result = await forwardGeocoding(e.nativeEvent.text);
+    if (!result) return;
+    setSelectedLocation(result);
+    animateTo(result.latitude, result.longitude);
+  };
+
+  const handleSelectedLocation = async (e: MapPressEvent | LongPressEvent) => {
     const { latitude, longitude } = e.nativeEvent.coordinate;
-    const reverseGeocodedAddress = await reverseGeocode(latitude, longitude);
     setSelectedLocation({ latitude, longitude });
-    setAddress(reverseGeocodedAddress);
+    setAddress(await reverseGeocode(latitude, longitude));
+    animateTo(latitude, longitude);
   };
 
   return (
@@ -53,20 +84,21 @@ const SelectLocation = () => {
         <Header address={address} />
         <View className="flex-1">
           <MapView
+            ref={mapRef}
             onPress={handleSelectedLocation}
             provider="google"
             style={styles.map}
             customMapStyle={mapTileStyleDark}
             userInterfaceStyle="dark"
             initialRegion={{
-              latitude: location?.coords.latitude ?? 14.5869,
-              longitude: location?.coords.longitude ?? 120.9832,
-              latitudeDelta: 0.001,
-              longitudeDelta: 0.001,
+              latitude: 14.5995,
+              longitude: 120.9842,
+              latitudeDelta: 0.1,
+              longitudeDelta: 0.1,
             }}
             showsCompass
             showsUserLocation
-            // showsBuildings
+            showsBuildings
             // showsTraffic
             showsMyLocationButton={false}
           >
@@ -82,44 +114,17 @@ const SelectLocation = () => {
             )}
           </MapView>
 
-          <SearchBar address={address} setAddress={setAddress} />
+          <SearchBar
+            address={address}
+            setAddress={setAddress}
+            handleSearchedLocation={handleSearchedLocation}
+          />
+          <ShowUserLocation focusUserLocation={focusUserLocation} />
         </View>
       </View>
     </TouchableWithoutFeedback>
   );
 };
-
-function SearchBar({
-  address,
-  setAddress,
-}: {
-  address: string;
-  setAddress: React.Dispatch<React.SetStateAction<string>>;
-}) {
-  return (
-    <View className="absolute self-center top-3 w-[80%] px-3 py-1 bg-zinc-700 rounded-full flex-row items-center elevation-lg">
-      <Image
-        source={icons.search}
-        className="h-5 w-5 -scale-x-[1]"
-        tintColor={"#848483"}
-        resizeMode="contain"
-      />
-      <TextInput
-        placeholder="Search a location..."
-        onChangeText={setAddress}
-        value={address}
-        placeholderTextColor={"#848483"}
-        className="flex-1 border-r border-r-zinc-600 font-rRegular text-zinc-300 mx-2"
-      />
-      <Image
-        source={icons.bookmark}
-        className="h-5 w-5"
-        tintColor={"#848483"}
-        resizeMode="contain"
-      />
-    </View>
-  );
-}
 
 function Header({ address }: { address: string }) {
   return (

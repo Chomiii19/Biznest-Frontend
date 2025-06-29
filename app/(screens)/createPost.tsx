@@ -140,6 +140,16 @@ const CreatePost = () => {
               Evaluate Location
             </Text>
           </TouchableOpacity>
+          <TouchableOpacity className="flex-row gap-3 items-center border-y border-y-zinc-800 px-4 py-2">
+            <Image
+              source={icons.evidence}
+              resizeMode="contain"
+              className="h-7 w-7"
+            />
+            <Text className="text-zinc-500 font-rRegular text-lg">
+              Proof of Ownership
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
     </TouchableWithoutFeedback>

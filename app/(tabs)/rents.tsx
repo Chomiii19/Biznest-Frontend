@@ -16,7 +16,7 @@ import { comments, posts } from "../../constants/data";
 import { getRelativeTime } from "../../utils/formatTime";
 import { formatCount } from "../../utils/formatCount";
 import FilterModal from "../../components/FilterModal";
-import { useBottomSheet } from "../../context/bottomSheetContext";
+import { useCommentBottomSheet } from "../../context/commentBottomSheetContext";
 import { router } from "expo-router";
 import ImageResolution from "../../components/ImageResolution";
 
@@ -44,7 +44,8 @@ const Rents = () => {
 };
 
 function Posts({}) {
-  const { openBottomSheet, loadComments, setPostOwner } = useBottomSheet();
+  const { openBottomSheet, loadComments, setPostOwner } =
+    useCommentBottomSheet();
   const [hasHearted, setHasHearted] = useState(false);
   const [hasBookmarked, setHasBookmarked] = useState(false);
   const [fullDescription, setFullDescription] = useState(false);

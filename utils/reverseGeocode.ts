@@ -1,6 +1,9 @@
 import * as Location from "expo-location";
 
-const reverseGeocode = async (latitude: number, longitude: number) => {
+const reverseGeocode = async (
+  latitude: number,
+  longitude: number
+): Promise<string> => {
   try {
     const addressArray = await Location.reverseGeocodeAsync({
       latitude,

@@ -21,6 +21,8 @@ const icons = {
   cash: require("../assets/icons/cash.png"),
   camera: require("../assets/icons/camera.png"),
   arrowUp: require("../assets/icons/arrowUp.png"),
+  evidence: require("../assets/icons/evidence.png"),
+  gps: require("../assets/icons/gps.png"),
   "heart-fill": require("../assets/icons/heart-fill.png"),
   "pin-fill": require("../assets/icons/pin-fill.png"),
   "pin-fill2": require("../assets/icons/pin-fill2.png"),

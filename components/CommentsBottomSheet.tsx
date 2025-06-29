@@ -18,12 +18,13 @@ import { IComments } from "../@types/interfaces";
 import icons from "../constants/icons";
 import { formatCount } from "../utils/formatCount";
 import { getRelativeTime } from "../utils/formatTime";
-import { useBottomSheet } from "../context/bottomSheetContext";
+import { useCommentBottomSheet } from "../context/commentBottomSheetContext";
 import { PlatformPressable } from "@react-navigation/elements";
 import renderBackdrop from "./BottomSheetBackdrop";
 
 function CommentBottomSheet() {
-  const { bottomSheetRef, snapPoints, comments, postOwner } = useBottomSheet();
+  const { commentBottomSheetRef, snapPoints, comments, postOwner } =
+    useCommentBottomSheet();
   const [createComment, setCreateComment] = useState("");
   const [upvotedComments, setUpvotedComments] = useState<Set<string>>(
     new Set()
@@ -58,11 +59,11 @@ function CommentBottomSheet() {
       enablePanDownToClose
       enableContentPanningGesture={false}
       index={-1}
-      ref={bottomSheetRef}
+      ref={commentBottomSheetRef}
       snapPoints={snapPoints}
       handleIndicatorStyle={{ backgroundColor: "#848483" }}
       backgroundStyle={{ backgroundColor: "#1B1A1B" }}
-      backdropComponent={renderBackdrop}
+      backdropComponent={(props) => renderBackdrop(props, 0.6)}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <BottomSheetView className="pt-2 bg-light-black w-full h-full">

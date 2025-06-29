@@ -1,7 +1,8 @@
 import { View, Image, Text, Pressable } from "react-native";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import icons from "../constants/icons";
-import CommentBottomSheet from "./CommentSheet";
+import CommentBottomSheet from "./CommentsBottomSheet";
+import EvaluateBottomSheet from "./EvaluateBottomSheet";
 
 const BottomTabBar: React.FC<BottomTabBarProps> = ({
   state,
@@ -54,6 +55,7 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({
       </View>
 
       <CommentBottomSheet />
+      <EvaluateBottomSheet />
     </>
   );
 };

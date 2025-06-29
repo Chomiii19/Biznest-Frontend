@@ -1,11 +1,11 @@
 import { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 
-const renderBackdrop = (props: any) => (
+const renderBackdrop = (props: any, opacity: number) => (
   <BottomSheetBackdrop
     {...props}
     disappearsOnIndex={-1}
     appearsOnIndex={0}
-    opacity={0.6}
+    opacity={opacity}
     pressBehavior="close"
   />
 );
