@@ -60,7 +60,7 @@ const Rents = () => {
   );
 };
 
-function Posts({}) {
+function Posts() {
   const { openBottomSheet, loadComments, setPostOwner } =
     useCommentBottomSheet();
   const [hasHearted, setHasHearted] = useState(false);
@@ -229,7 +229,7 @@ function Header({
       <Text className="text-zinc-300 font-rBold text-3xl">Rents</Text>
 
       <View className="flex-row items-center gap-3">
-        <TouchableOpacity className="flex-row items-center gap-1 border border-icon-stroke rounded-full p-1.5">
+        <TouchableOpacity className="border border-icon-stroke rounded-full p-1.5">
           <Image
             source={icons.search}
             tintColor="#848483"

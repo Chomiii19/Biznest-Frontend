@@ -20,7 +20,7 @@ function SearchBar({
   ) => Promise<void>;
 }) {
   return (
-    <View className="absolute self-center top-3 w-[80%] px-3 py-1 bg-zinc-700 rounded-full flex-row items-center elevation-lg">
+    <View className="absolute self-center top-3 w-[80%] px-3 py-1 bg-zinc-700 rounded-full flex-row items-center elevation-lg border border-zinc-600">
       <Image
         source={icons.search}
         className="h-5 w-5 -scale-x-[1]"

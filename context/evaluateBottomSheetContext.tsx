@@ -21,7 +21,7 @@ export const EvaluateBottomSheetProvider = ({
   const [postOwner, setPostOwner] = useState("");
   const [comments, setComments] = useState<IComments[]>([]);
   const evaluateBottomSheetRef = useRef<BottomSheet | null>(null);
-  const snapPoints = useMemo(() => ["30%", "50%"], []);
+  const snapPoints = useMemo(() => ["10%", "50%"], []);
   const openBottomSheet = () => evaluateBottomSheetRef.current?.expand();
   const loadComments = (comments: IComments[]) => setComments(comments);
 
