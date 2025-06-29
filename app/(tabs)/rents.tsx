@@ -9,6 +9,7 @@ import {
   Animated,
   TouchableWithoutFeedback,
   StyleSheet,
+  RefreshControl,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import icons from "../../constants/icons";
@@ -23,6 +24,12 @@ import ImageResolution from "../../components/ImageResolution";
 const Rents = () => {
   const [isVisibleFilterModal, setIsVisibleFilterModal] = useState(false);
   const [isFiltering, setIsFiltering] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const refreshPosts = async () => {
+    setIsRefreshing(true);
+    setIsRefreshing(false);
+  };
 
   return (
     <View className="flex-1 bg-backgroundColor">
@@ -36,7 +43,17 @@ const Rents = () => {
           setIsVisibleFilterModal={setIsVisibleFilterModal}
         />
       )}
-      <ScrollView>
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={refreshPosts}
+            colors={["#7862BF"]}
+            progressBackgroundColor="#222322"
+            tintColor="#4ade80"
+          />
+        }
+      >
         <Posts />
       </ScrollView>
     </View>
