@@ -20,9 +20,6 @@ Biznest is a location intelligence platform that helps aspiring entrepreneurs an
 - 🏷️ **BizSpaces: Community-Posted Locations for Rent**  
   Post and browse business-ready spaces with attached evaluation scores.
 
-- 🧮 **Startup Cost Estimator**  
-  Know the estimated capital needed based on location, size, and business type.
-
 - 🔁 **Compare Two Locations**  
   Weigh two locations side-by-side to see which performs better for your business goals.
 
@@ -52,13 +49,13 @@ Biznest uses open and public datasets from:
 
 ---
 
-## 🛠️ Built With
+## 🛠️ Tech Stacks
 
 - **Frontend:** React / React Native / Expo
 - **Backend:** Node.js / Express
-- **Database:** MongoDB / Firebase / Supabase (project-dependent)
-- **Maps:** Leaflet.js / Mapbox / Google Maps API
-- **Design:** Tailwind CSS, Figma, NativeWind
+- **Database:** MongoDB
+- **Maps:** Google Maps API, expo-maps
+- **Design:** Nativewind
 
 ---
 
