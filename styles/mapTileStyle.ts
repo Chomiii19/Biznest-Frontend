@@ -166,7 +166,7 @@ export const mapTileStyleDark = [
   },
   {
     elementType: "labels.icon",
-    stylers: [{ visibility: "on" }],
+    stylers: [{ visibility: "off" }],
   },
   {
     elementType: "labels.text.fill",
