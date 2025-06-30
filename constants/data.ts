@@ -388,3 +388,21 @@ export const comments = [
     ],
   },
 ];
+
+export const userPosts = [
+  {
+    images_url: [require("../assets/images/post-1.jpg")],
+    comment_count: 120,
+    heart_count: 1485,
+  },
+  {
+    images_url: [require("../assets/images/post-2.jpg")],
+    comment_count: 87,
+    heart_count: 1340,
+  },
+  {
+    images_url: [require("../assets/images/post-3.jpg")],
+    comment_count: 41,
+    heart_count: 300,
+  },
+];

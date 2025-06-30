@@ -20,6 +20,7 @@ const icons = {
   send: require("../assets/icons/send.png"),
   cash: require("../assets/icons/cash.png"),
   camera: require("../assets/icons/camera.png"),
+  setting: require("../assets/icons/setting.png"),
   arrowUp: require("../assets/icons/arrowUp.png"),
   evidence: require("../assets/icons/evidence.png"),
   gps: require("../assets/icons/gps.png"),
