@@ -28,7 +28,7 @@ import ShowUserLocation from "../../components/ShowUserLocation";
 const SelectLocation = () => {
   const mapRef = useRef<MapView | null>(null);
   const [selectedLocation, setSelectedLocation] = useState<ICoords | null>(
-    null
+    null,
   );
   const [address, setAddress] = useState("");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -58,12 +58,12 @@ const SelectLocation = () => {
         latitudeDelta: 0.001,
         longitudeDelta: 0.001,
       },
-      500
+      500,
     );
   };
 
   const handleSearchedLocation = async (
-    e: NativeSyntheticEvent<TextInputSubmitEditingEventData>
+    e: NativeSyntheticEvent<TextInputSubmitEditingEventData>,
   ) => {
     const result = await forwardGeocoding(e.nativeEvent.text);
     if (!result) return;
@@ -115,9 +115,9 @@ const SelectLocation = () => {
           </MapView>
 
           <SearchBar
-            address={address}
-            setAddress={setAddress}
-            handleSearchedLocation={handleSearchedLocation}
+            input={address}
+            setInput={setAddress}
+            handleSearchedInput={handleSearchedLocation}
           />
           <ShowUserLocation focusUserLocation={focusUserLocation} />
         </View>
