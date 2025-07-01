@@ -17,8 +17,8 @@ const Profile = () => {
             className="h-8 w-8"
             resizeMode="contain"
           />
-          <View className="flex items-center justify-center w-5 h-5 border-2 border-backgroundColor bg-red-400 rounded-full absolute -right-3 top-0">
-            <Text className=" text-zinc-300 font-rRegular text-[8px]">3</Text>
+          <View className="flex items-center justify-center w-5 h-5 border-2 border-backgroundColor bg-red-500 rounded-full absolute -right-3 top-0">
+            <Text className=" text-zinc-300 font-rRegular text-[8px]">9+</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => router.push("/(screens)/settings")}>

@@ -459,8 +459,8 @@ export const messages = [
     latestMessage:
       "I like the foot traffic in that area, but how’s the noise level? Planning to open a meditation and wellness center.",
     latestMessageDate: "2025-06-25T15:02:00Z",
-    isRead: true,
-    unreadCount: 0,
+    isRead: false,
+    unreadCount: 10,
   },
   {
     username: "nina_art",
@@ -497,6 +497,24 @@ export const messages = [
     latestMessageDate: "2025-06-22T19:05:00Z",
     isRead: true,
     unreadCount: 0,
+  },
+  {
+    username: "pinoynomad",
+    fullname: "Leo Dominguez",
+    latestMessage:
+      "I like the foot traffic in that area, but how’s the noise level? Planning to open a meditation and wellness center.",
+    latestMessageDate: "2025-06-25T15:02:00Z",
+    isRead: true,
+    unreadCount: 0,
+  },
+  {
+    username: "nina_art",
+    fullname: "Nina Alcantara",
+    latestMessage:
+      "Hello! I’m considering this unit as my first art studio. Do you have any more photos or details about the lighting?",
+    latestMessageDate: "2025-06-24T21:18:00Z",
+    isRead: false,
+    unreadCount: 1,
   },
 ];
 
