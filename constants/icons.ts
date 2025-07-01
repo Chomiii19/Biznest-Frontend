@@ -14,6 +14,7 @@ const icons = {
   pin: require("../assets/icons/pin.png"),
   peso: require("../assets/icons/peso.png"),
   next: require("../assets/icons/next.png"),
+  email: require("../assets/icons/email.png"),
   down: require("../assets/icons/down.png"),
   x: require("../assets/icons/x.png"),
   evaluate: require("../assets/icons/evaluate.png"),
