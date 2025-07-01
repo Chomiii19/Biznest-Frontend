@@ -538,34 +538,63 @@ export const conversations = [
         message: "That would be great. I'm free Friday afternoon.",
         date: "2025-06-27T18:49:34Z",
       },
-    ],
-  },
-  {
-    username: "nina_art",
-    fullname: "Nina Alcantara",
-    messages: [
       {
-        username: "nina_art",
-        message: "Hi! I’m looking at the Mandaluyong listing you posted.",
-        date: "2025-06-24T21:18:00Z",
+        username: "me",
+        message: "Perfect. I can meet you there around 3 PM if that works.",
+        date: "2025-06-27T18:51:02Z",
+      },
+      {
+        username: "chomi_b",
+        message: "Sounds good! Is there parking available nearby?",
+        date: "2025-06-27T18:53:10Z",
+      },
+      {
+        username: "me",
+        message: "Yes, there’s a parking lot right across the street.",
+        date: "2025-06-27T18:55:42Z",
+      },
+      {
+        username: "chomi_b",
+        message: "Nice. How long can we stay at the location?",
+        date: "2025-06-27T18:57:55Z",
+      },
+      {
+        username: "me",
+        message: "As long as needed during the visit, no rush.",
+        date: "2025-06-27T18:59:03Z",
+      },
+      {
+        username: "chomi_b",
+        message:
+          "Okay cool, is it okay if I bring a friend to help me inspect?",
+        date: "2025-06-27T19:01:19Z",
+      },
+      {
+        username: "me",
+        message: "Absolutely, the more eyes the better!",
+        date: "2025-06-27T19:03:30Z",
+      },
+      {
+        username: "chomi_b",
+        message:
+          "Thanks! Just confirming — it’s the unit beside the old bakery?",
+        date: "2025-06-27T19:06:15Z",
       },
       {
         username: "me",
         message:
-          "Hello Nina! Yes, it’s still available. Would you like more details?",
-        date: "2025-06-24T21:20:15Z",
+          "Yes, exactly. Unit 4, left of the old bakery with green gate.",
+        date: "2025-06-27T19:08:00Z",
       },
       {
-        username: "nina_art",
-        message:
-          "Yes please! Mainly about the lighting and noise level inside.",
-        date: "2025-06-24T21:21:30Z",
+        username: "chomi_b",
+        message: "Got it. Looking forward to checking it out!",
+        date: "2025-06-27T19:10:44Z",
       },
       {
         username: "me",
-        message:
-          "It gets a lot of natural light during the day and it's generally quiet — no main road traffic nearby.",
-        date: "2025-06-24T21:23:02Z",
+        message: "See you Friday, then!",
+        date: "2025-06-27T19:11:30Z",
       },
     ],
   },

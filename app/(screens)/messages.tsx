@@ -6,7 +6,8 @@ import {
   RefreshControl,
 } from "react-native";
 import { PlatformPressable } from "@react-navigation/elements";
-import React, { useState } from "react";
+import * as Haptics from "expo-haptics";
+import React, { useMemo, useRef, useState } from "react";
 import { router } from "expo-router";
 import icons from "../../constants/icons";
 import { ScrollView } from "react-native-gesture-handler";
@@ -14,10 +15,20 @@ import SearchBar from "../../components/SearchBar";
 import { messages } from "../../constants/data";
 import { getRelativeTime } from "../../utils/formatTime";
 import getInitials from "../../utils/getInitials";
+import MessagesBottomSheet from "../../components/MessagesBottomSheet";
+import BottomSheet from "@gorhom/bottom-sheet";
 
 const Messages = () => {
   const [searchRecipient, setSearchRecipient] = useState("");
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  //   BottomSheet Hooks
+  const messagesBottomSheetRef = useRef<BottomSheet | null>(null);
+  const snapPoints = useMemo(() => ["45%"], []);
+  const openBottomSheet = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    messagesBottomSheetRef.current?.expand();
+  };
 
   const refreshPosts = async () => {
     setIsRefreshing(true);
@@ -53,6 +64,8 @@ const Messages = () => {
           {messages.map((message, i) => (
             <PlatformPressable
               key={i}
+              onLongPress={openBottomSheet}
+              onPress={() => router.push("/viewConversation")}
               className="w-full flex-row items-center px-3 py-4 justify-between bg-light-black rounded-2xl"
             >
               <View className="flex-row items-center gap-3">
@@ -96,6 +109,11 @@ const Messages = () => {
           ))}
         </View>
       </ScrollView>
+
+      <MessagesBottomSheet
+        messagesBottomSheetRef={messagesBottomSheetRef}
+        snapPoints={snapPoints}
+      />
     </View>
   );
 };
