@@ -23,6 +23,7 @@ const icons = {
   setting: require("../assets/icons/setting.png"),
   arrowUp: require("../assets/icons/arrowUp.png"),
   evidence: require("../assets/icons/evidence.png"),
+  logout: require("../assets/icons/logout.png"),
   gps: require("../assets/icons/gps.png"),
   "heart-fill": require("../assets/icons/heart-fill.png"),
   "pin-fill": require("../assets/icons/pin-fill.png"),
