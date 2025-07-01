@@ -12,12 +12,14 @@ function SearchBar({
   input,
   setInput,
   handleSearchedInput,
-  width = "w-[80%]",
-  position = "absolute",
+  width,
+  position,
+  top,
 }: {
   input: string;
-  width?: string;
-  position?: string;
+  width: string;
+  position: string;
+  top: string;
   setInput: React.Dispatch<React.SetStateAction<string>>;
   handleSearchedInput: (
     e: NativeSyntheticEvent<TextInputSubmitEditingEventData>,
@@ -25,7 +27,7 @@ function SearchBar({
 }) {
   return (
     <View
-      className={`self-center top-3 px-3 py-1 bg-zinc-700 rounded-full flex-row items-center elevation-lg border border-zinc-600 ${width} ${position}`}
+      className={`self-center px-3 py-1 bg-zinc-700 rounded-full flex-row items-center elevation-lg border border-zinc-600 ${width} ${position} ${top}`}
     >
       <Image
         source={icons.search}

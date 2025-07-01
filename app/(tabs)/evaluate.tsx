@@ -120,6 +120,9 @@ const Evaluate = () => {
           input={address}
           setInput={setAddress}
           handleSearchedInput={handleSearchedLocation}
+          width="w-[80%]"
+          position="absolute"
+          top="top-3"
         />
         <ShowUserLocation focusUserLocation={focusUserLocation} />
       </View>

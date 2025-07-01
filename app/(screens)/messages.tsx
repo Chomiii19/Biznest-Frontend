@@ -1,4 +1,5 @@
-import { View, Text, TouchableOpacity, Image, TextInput } from "react-native";
+import { View, Text, TouchableOpacity, Image } from "react-native";
+import { PlatformPressable } from "@react-navigation/elements";
 import React, { useState } from "react";
 import { router } from "expo-router";
 import icons from "../../constants/icons";
@@ -13,25 +14,36 @@ const Messages = () => {
     <View className="flex-1 bg-backgroundColor">
       <Header />
       <ScrollView className="px-4 mt-2">
-        <View className="w-full">
-          <SearchBar
-            input={searchRecipient}
-            setInput={setSearchRecipient}
-            width="w-full"
-            position=""
-            handleSearchedInput={handleSearchRecipient}
-          />
-        </View>
+        <SearchBar
+          input={searchRecipient}
+          setInput={setSearchRecipient}
+          width="w-full"
+          position="relative"
+          handleSearchedInput={handleSearchRecipient}
+          top="0"
+        />
 
-        <View className="w-full flex-row items-center px-3 py-1 justify-between">
+        <PlatformPressable className="w-full flex-row items-center px-3 py-4 justify-between bg-light-black rounded-2xl">
           <View className="flex-row items-center gap-3">
-            <View className="bg-primary rounded-full justify-center items-center flex w-36 h-36">
+            <View className="bg-primary rounded-full justify-center items-center flex w-14 h-14">
               <Text className="font-rBold text-zinc-300 text-2xl">JB</Text>
             </View>
 
-            <View></View>
+            <View className="flex-col  justify-self-start">
+              <View className="flex-row gap-1 items-center">
+                <Text className="text-lg font-rRegular text-zinc-300">
+                  chomi_b
+                </Text>
+                <Text className="text-xs font-rRegular text-zinc-500">
+                  2 minute ago
+                </Text>
+              </View>
+              <Text className="text-sm font-rRegular text-zinc-300">
+                skdksdkkdhshdkshdkhkhskhdk
+              </Text>
+            </View>
           </View>
-        </View>
+        </PlatformPressable>
       </ScrollView>
     </View>
   );
