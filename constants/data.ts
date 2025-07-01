@@ -406,3 +406,149 @@ export const userPosts = [
     heart_count: 300,
   },
 ];
+
+export const messages = [
+  {
+    username: "chomi_b",
+    fullname: "Jomari Borines",
+    latestMessage:
+      "Hi! I’m interested in the spot you posted in Sampaloc. Is it still available? I’d love to set up a small café there.",
+    latestMessageDate: "2025-06-27T18:45:00Z",
+    isRead: false,
+    unreadCount: 2,
+  },
+  {
+    username: "mikaella23",
+    fullname: "Mikaella Santos",
+    latestMessage:
+      "Thanks for the update! I’ll let my team know and we’ll discuss it during our planning session tonight.",
+    latestMessageDate: "2025-06-27T16:20:00Z",
+    isRead: true,
+    unreadCount: 0,
+  },
+  {
+    username: "juan_delo",
+    fullname: "Juan Dela Cruz",
+    latestMessage:
+      "Can I schedule a site visit tomorrow afternoon? I’m currently managing logistics and would like to finalize by next week.",
+    latestMessageDate: "2025-06-26T14:10:00Z",
+    isRead: false,
+    unreadCount: 1,
+  },
+  {
+    username: "trisha.codes",
+    fullname: "Trisha Mendoza",
+    latestMessage:
+      "Let me know once the evaluation results are available. I want to compare this location with two others I bookmarked.",
+    latestMessageDate: "2025-06-26T08:30:00Z",
+    isRead: true,
+    unreadCount: 0,
+  },
+  {
+    username: "kyle.cam",
+    fullname: "Kyle Camacho",
+    latestMessage:
+      "Do you accept short-term leases, like three months or less? I'm planning a seasonal pop-up for gadgets and accessories.",
+    latestMessageDate: "2025-06-25T20:50:00Z",
+    isRead: false,
+    unreadCount: 3,
+  },
+  {
+    username: "pinoynomad",
+    fullname: "Leo Dominguez",
+    latestMessage:
+      "I like the foot traffic in that area, but how’s the noise level? Planning to open a meditation and wellness center.",
+    latestMessageDate: "2025-06-25T15:02:00Z",
+    isRead: true,
+    unreadCount: 0,
+  },
+  {
+    username: "nina_art",
+    fullname: "Nina Alcantara",
+    latestMessage:
+      "Hello! I’m considering this unit as my first art studio. Do you have any more photos or details about the lighting?",
+    latestMessageDate: "2025-06-24T21:18:00Z",
+    isRead: false,
+    unreadCount: 1,
+  },
+  {
+    username: "thechefmike",
+    fullname: "Chef Mike Velasquez",
+    latestMessage:
+      "I run a ghost kitchen in Quezon City and looking to expand. Can you tell me about delivery accessibility in that area?",
+    latestMessageDate: "2025-06-24T09:45:00Z",
+    isRead: true,
+    unreadCount: 0,
+  },
+  {
+    username: "vinsdailydose",
+    fullname: "Vincent Salazar",
+    latestMessage:
+      "Hey! That retail space near Katipunan looks promising. Just checking if there's secure parking nearby for staff and customers?",
+    latestMessageDate: "2025-06-23T13:30:00Z",
+    isRead: false,
+    unreadCount: 2,
+  },
+  {
+    username: "anne.m",
+    fullname: "Anne Mercado",
+    latestMessage:
+      "Would it be possible to hold the unit until the weekend? I’m out of town but planning to check it out with my partner.",
+    latestMessageDate: "2025-06-22T19:05:00Z",
+    isRead: true,
+    unreadCount: 0,
+  },
+];
+
+export const conversations = [
+  {
+    username: "chomi_b",
+    fullname: "Jomari Borines",
+    messages: [
+      {
+        username: "chomi_b",
+        message: "Hi! Is the location in Sampaloc still available?",
+        date: "2025-06-27T18:45:00Z",
+      },
+      {
+        username: "me",
+        message: "Yes, it’s still open! Would you like to visit it this week?",
+        date: "2025-06-27T18:47:10Z",
+      },
+      {
+        username: "chomi_b",
+        message: "That would be great. I'm free Friday afternoon.",
+        date: "2025-06-27T18:49:34Z",
+      },
+    ],
+  },
+  {
+    username: "nina_art",
+    fullname: "Nina Alcantara",
+    messages: [
+      {
+        username: "nina_art",
+        message: "Hi! I’m looking at the Mandaluyong listing you posted.",
+        date: "2025-06-24T21:18:00Z",
+      },
+      {
+        username: "me",
+        message:
+          "Hello Nina! Yes, it’s still available. Would you like more details?",
+        date: "2025-06-24T21:20:15Z",
+      },
+      {
+        username: "nina_art",
+        message:
+          "Yes please! Mainly about the lighting and noise level inside.",
+        date: "2025-06-24T21:21:30Z",
+      },
+      {
+        username: "me",
+        message:
+          "It gets a lot of natural light during the day and it's generally quiet — no main road traffic nearby.",
+        date: "2025-06-24T21:23:02Z",
+      },
+    ],
+  },
+];

@@ -3,39 +3,34 @@ import React, { useState } from "react";
 import { router } from "expo-router";
 import icons from "../../constants/icons";
 import { ScrollView } from "react-native-gesture-handler";
+import SearchBar from "../../components/SearchBar";
 
 const Messages = () => {
   const [searchRecipient, setSearchRecipient] = useState("");
+  const handleSearchRecipient = async () => {};
 
   return (
     <View className="flex-1 bg-backgroundColor">
       <Header />
       <ScrollView className="px-4 mt-2">
-        <View className="absolute self-center top-3 w-full px-3 py-1 bg-zinc-700 rounded-full flex-row items-center elevation-lg border border-zinc-600">
-          <Image
-            source={icons.search}
-            className="h-5 w-5 -scale-x-[1]"
-            tintColor={"#848483"}
-            resizeMode="contain"
+        <View className="w-full">
+          <SearchBar
+            input={searchRecipient}
+            setInput={setSearchRecipient}
+            width="w-full"
+            position=""
+            handleSearchedInput={handleSearchRecipient}
           />
-          <TextInput
-            scrollEnabled
-            placeholder="Search a location..."
-            value={searchRecipient}
-            onChangeText={setSearchRecipient}
-            placeholderTextColor={"#848483"}
-            className="flex-1 font-rRegular text-zinc-300 mx-2"
-          />
-          {searchRecipient && (
-            <TouchableOpacity onPress={() => setSearchRecipient("")}>
-              <Image
-                source={icons.x}
-                className="h-4 w-4"
-                tintColor={"#848483"}
-                resizeMode="contain"
-              />
-            </TouchableOpacity>
-          )}
+        </View>
+
+        <View className="w-full flex-row items-center px-3 py-1 justify-between">
+          <View className="flex-row items-center gap-3">
+            <View className="bg-primary rounded-full justify-center items-center flex w-36 h-36">
+              <Text className="font-rBold text-zinc-300 text-2xl">JB</Text>
+            </View>
+
+            <View></View>
+          </View>
         </View>
       </ScrollView>
     </View>
