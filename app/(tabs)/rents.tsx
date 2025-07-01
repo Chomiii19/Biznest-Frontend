@@ -102,7 +102,10 @@ function Posts() {
                 <Text className="text-zinc-300 font-rSemibold text-lg">
                   {post.username}
                 </Text>
-                <TouchableOpacity className="bg-primary px-2 py-1 rounded-md">
+                <TouchableOpacity
+                  onPress={() => router.push("/(screens)/viewConversation")}
+                  className="bg-primary px-2 py-1 rounded-md"
+                >
                   <Text className="text-zinc-300 font-rSemibold text-xs">
                     Message
                   </Text>
