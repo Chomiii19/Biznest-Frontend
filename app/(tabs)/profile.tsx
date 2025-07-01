@@ -9,17 +9,27 @@ import { router } from "expo-router";
 const Profile = () => {
   return (
     <View className="flex-1 bg-backgroundColor px-4">
-      <TouchableOpacity
-        onPress={() => router.push("/(screens)/settings")}
-        className="absolute top-1 right-5"
-      >
-        <Image
-          source={icons.setting}
-          tintColor={"#848483"}
-          className="h-8 w-8"
-          resizeMode="contain"
-        />
-      </TouchableOpacity>
+      <View className="flex-row items-center gap-4 absolute top-1 right-5">
+        <TouchableOpacity onPress={() => router.push("/(screens)/messages")}>
+          <Image
+            source={icons.email}
+            tintColor={"#848483"}
+            className="h-8 w-8"
+            resizeMode="contain"
+          />
+          <View className="flex items-center justify-center w-5 h-5 border-2 border-backgroundColor bg-red-400 rounded-full absolute -right-3 top-0">
+            <Text className=" text-zinc-300 font-rRegular text-[8px]">3</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push("/(screens)/settings")}>
+          <Image
+            source={icons.setting}
+            tintColor={"#848483"}
+            className="h-8 w-8"
+            resizeMode="contain"
+          />
+        </TouchableOpacity>
+      </View>
 
       <View className="h-40 w-40 rounded-full bg-primary p-5 self-center flex justify-center items-center absolute z-50 border-8 border-backgroundColor mt-4">
         <Text className="text-5xl text-zinc-300 font-rBold">JB</Text>
