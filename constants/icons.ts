@@ -16,6 +16,8 @@ const icons = {
   next: require("../assets/icons/next.png"),
   email: require("../assets/icons/email.png"),
   hidden: require("../assets/icons/hidden.png"),
+  eye: require("../assets/icons/eye.png"),
+  eyeClose: require("../assets/icons/eyeClose.png"),
   down: require("../assets/icons/down.png"),
   x: require("../assets/icons/x.png"),
   evaluate: require("../assets/icons/evaluate.png"),
