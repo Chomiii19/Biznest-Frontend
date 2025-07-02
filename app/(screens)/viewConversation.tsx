@@ -20,14 +20,18 @@ import { conversations } from "../../constants/data";
 import { formatTime } from "../../utils/formatTime";
 import ConversationBottomSheet from "../../components/ConversationBottomSheet";
 import BottomSheet from "@gorhom/bottom-sheet";
+import MessagesBottomSheet from "../../components/MessagesBottomSheet";
 
 const ViewConversation = () => {
   const [message, setMessage] = useState("");
   const [image, setImage] = useState<string | null>(null);
 
   //   BottomSheet Hooks
+  const messagesBottomSheetRef = useRef<BottomSheet | null>(null);
+  const messageSnapPoints = useMemo(() => ["45%"], []);
   const conversationBottomSheetRef = useRef<BottomSheet | null>(null);
   const snapPoints = useMemo(() => ["25%"], []);
+  const openMessageBottomSheet = () => messagesBottomSheetRef.current?.expand();
   const openBottomSheet = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
     conversationBottomSheetRef.current?.expand();
@@ -58,7 +62,7 @@ const ViewConversation = () => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
       >
-        <Header />
+        <Header openMessageBottomSheet={openMessageBottomSheet} />
         <FlatList
           data={conversations[0].messages}
           keyExtractor={(_, i) => i.toString()}
@@ -123,12 +127,20 @@ const ViewConversation = () => {
           conversationBottomSheetRef={conversationBottomSheetRef}
           snapPoints={snapPoints}
         />
+        <MessagesBottomSheet
+          messagesBottomSheetRef={messagesBottomSheetRef}
+          snapPoints={messageSnapPoints}
+        />
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
 };
 
-function Header() {
+function Header({
+  openMessageBottomSheet,
+}: {
+  openMessageBottomSheet: () => void;
+}) {
   return (
     <View className="w-full flex-row items-center px-4 p-2 justify-between border-b border-b-zinc-800">
       <View className="flex-row gap-2 items-center">
@@ -149,7 +161,7 @@ function Header() {
         </View>
       </View>
 
-      <TouchableOpacity>
+      <TouchableOpacity onPress={openMessageBottomSheet}>
         <Image
           source={icons.more}
           className="h-7 w-7 rotate-90"
