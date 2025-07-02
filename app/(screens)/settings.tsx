@@ -32,7 +32,10 @@ const Settings = () => {
           Account
         </Text>
         <View className="flex-col w-full border bg-light-black/80 rounded-xl">
-          <PlatformPressable className="px-4 py-2 flex-row justify-between border border-b-0 border-zinc-700 rounded-t-xl">
+          <PlatformPressable
+            onPress={() => router.push("/editProfile")}
+            className="px-4 py-2 flex-row justify-between border border-b-0 border-zinc-700 rounded-t-xl"
+          >
             <Text className="text-zinc-300 font-rRegular">Edit Profile</Text>
             <Image
               source={icons.next}
@@ -41,7 +44,10 @@ const Settings = () => {
               tintColor={"#d4d4d8"}
             />
           </PlatformPressable>
-          <PlatformPressable className="px-4 py-2 flex-row justify-between border border-zinc-700">
+          <PlatformPressable
+            onPress={() => router.push("/changePassword")}
+            className="px-4 py-2 flex-row justify-between border border-zinc-700"
+          >
             <Text className="text-zinc-300 font-rRegular">Change Password</Text>
             <Image
               source={icons.next}
@@ -149,7 +155,10 @@ const Settings = () => {
           Others
         </Text>
         <View className="flex-col w-full border bg-light-black/80 rounded-xl">
-          <PlatformPressable className="px-4 py-2 flex-row justify-between border border-b-0 border-zinc-700 rounded-t-xl">
+          <PlatformPressable
+            onPress={() => router.push("/FAQ")}
+            className="px-4 py-2 flex-row justify-between border border-b-0 border-zinc-700 rounded-t-xl"
+          >
             <Text className="text-zinc-300 font-rRegular">FAQ</Text>
             <Image
               source={icons.next}
@@ -158,7 +167,10 @@ const Settings = () => {
               tintColor={"#d4d4d8"}
             />
           </PlatformPressable>
-          <PlatformPressable className="px-4 py-2 flex-row justify-between border border-zinc-700">
+          <PlatformPressable
+            onPress={() => router.push("/contactUs")}
+            className="px-4 py-2 flex-row justify-between border border-zinc-700"
+          >
             <Text className="text-zinc-300 font-rRegular">Contact Us</Text>
             <Image
               source={icons.next}
@@ -167,8 +179,23 @@ const Settings = () => {
               tintColor={"#d4d4d8"}
             />
           </PlatformPressable>
-          <PlatformPressable className="px-4 py-2 flex-row justify-between border border-t-0 border-zinc-700">
+          <PlatformPressable
+            onPress={() => router.push("/feedback")}
+            className="px-4 py-2 flex-row justify-between border border-t-0 border-zinc-700"
+          >
             <Text className="text-zinc-300 font-rRegular">Feedback</Text>
+            <Image
+              source={icons.next}
+              className="h-7 w-7"
+              resizeMode="contain"
+              tintColor={"#d4d4d8"}
+            />
+          </PlatformPressable>
+          <PlatformPressable
+            onPress={() => router.push("/reportIssue")}
+            className="px-4 py-2 flex-row justify-between border border-t-0 border-zinc-700"
+          >
+            <Text className="text-zinc-300 font-rRegular">Report an Issue</Text>
             <Image
               source={icons.next}
               className="h-7 w-7"
