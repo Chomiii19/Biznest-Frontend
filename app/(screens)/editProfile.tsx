@@ -21,6 +21,7 @@ const EditProfile = () => {
   const [email, setEmail] = useState("");
 
   const clearStates = () => {
+    Keyboard.dismiss();
     setFirstname("");
     setSurname("");
     setUsername("");
