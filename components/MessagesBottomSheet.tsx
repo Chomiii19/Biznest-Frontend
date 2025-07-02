@@ -18,6 +18,7 @@ import {
 import { PlatformPressable } from "@react-navigation/elements";
 import renderBackdrop from "./BottomSheetBackdrop";
 import icons from "../constants/icons";
+import { router } from "expo-router";
 
 function MessagesBottomSheet({
   messagesBottomSheetRef,
@@ -75,7 +76,10 @@ function MessagesBottomSheet({
               tintColor={"#d4d4d8"}
             />
           </PlatformPressable>
-          <PlatformPressable className="px-4 py-3 items-center flex-row justify-between">
+          <PlatformPressable
+            onPress={() => router.push("/viewProfile")}
+            className="px-4 py-3 items-center flex-row justify-between"
+          >
             <Text className="font-rRegular text-zinc-300 text-xl">
               View Profile
             </Text>
@@ -95,7 +99,10 @@ function MessagesBottomSheet({
               tintColor={"#d4d4d8"}
             />
           </PlatformPressable>
-          <PlatformPressable className="px-4 py-3 items-center flex-row justify-between">
+          <PlatformPressable
+            onPress={() => router.push("/reportIssue")}
+            className="px-4 py-3 items-center flex-row justify-between"
+          >
             <Text className="font-rRegular text-red-500 text-xl">Report</Text>
             <Image
               source={icons.warning}

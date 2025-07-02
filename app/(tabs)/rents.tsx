@@ -99,9 +99,13 @@ function Posts() {
           <View className="w-full justify-between flex-row items-center">
             <View className="flex flex-col">
               <View className="flex-row items-center gap-1.5">
-                <Text className="text-zinc-300 font-rSemibold text-lg">
-                  {post.username}
-                </Text>
+                <TouchableOpacity
+                  onPress={() => router.push("/(screens)/viewProfile")}
+                >
+                  <Text className="text-zinc-300 font-rSemibold text-lg">
+                    {post.username}
+                  </Text>
+                </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => router.push("/(screens)/viewConversation")}
                   className="bg-primary px-2 py-1 rounded-md"

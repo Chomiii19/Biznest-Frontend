@@ -21,13 +21,14 @@ import { getRelativeTime } from "../utils/formatTime";
 import { useCommentBottomSheet } from "../context/commentBottomSheetContext";
 import { PlatformPressable } from "@react-navigation/elements";
 import renderBackdrop from "./BottomSheetBackdrop";
+import { router } from "expo-router";
 
 function CommentBottomSheet() {
   const { commentBottomSheetRef, snapPoints, comments, postOwner } =
     useCommentBottomSheet();
   const [createComment, setCreateComment] = useState("");
   const [upvotedComments, setUpvotedComments] = useState<Set<string>>(
-    new Set()
+    new Set(),
   );
   const [openReplies, setOpenReplies] = useState<Set<number>>(new Set());
   const [replyingTo, setReplyingTo] = useState("");
@@ -195,9 +196,11 @@ function CommentComponent({
   return (
     <PlatformPressable className="flex-col gap-2 bg-zinc-800 mb-2 p-2 rounded-lg">
       <View className="flex-row items-center gap-1">
-        <Text className="text-zinc-300 font-rSemibold text-lg">
-          {comment.username}
-        </Text>
+        <TouchableOpacity onPress={() => router.push("/(screens)/viewProfile")}>
+          <Text className="text-zinc-300 font-rSemibold text-lg">
+            {comment.username}
+          </Text>
+        </TouchableOpacity>
         <Text className="text-zinc-500 font-rRegular text-xs">
           {getRelativeTime(comment.createdAt)}
         </Text>
