@@ -599,3 +599,56 @@ export const conversations = [
     ],
   },
 ];
+
+export const faqs = [
+  {
+    question: "🧠 What is Biznest?",
+    answer:
+      "Biznest is a mobile app that helps entrepreneurs evaluate if a location in Metro Manila is ideal for their business. It uses data like nearby establishments, accessibility, and business density to generate a suitability score.",
+  },
+  {
+    question: "📍 How does the location evaluation work?",
+    answer:
+      "We analyze multiple data points — such as surrounding businesses, foot traffic, transport access, and business trends — to assess whether a location is a good fit for different types of businesses.",
+  },
+  {
+    question: "🏪 What business types does Biznest support?",
+    answer:
+      "Biznest currently supports evaluations for food stalls, cafés, milk tea shops, sari-sari stores, salons, boutiques, coworking spaces, and more. We’re constantly expanding our list!",
+  },
+  {
+    question: "🔐 Is my personal data secure?",
+    answer:
+      "Yes. We only collect necessary data and do not share your personal information with third parties. You are in full control of your account.",
+  },
+  {
+    question: "📦 Can I post a location for rent?",
+    answer:
+      "Yes! You can post available spaces with photos, descriptions, rental rates, and get a Biznest Score to attract potential renters.",
+  },
+  {
+    question: "🗺️ Where does Biznest get its data?",
+    answer:
+      "We source public and open data (e.g., HOTOSM, government records), combined with user-submitted information and evaluations.",
+  },
+  {
+    question: "💬 How accurate is the Biznest Score?",
+    answer:
+      "While we aim for the highest accuracy, the score is a guide based on available data. We recommend combining it with your own market research and instincts.",
+  },
+  {
+    question: "🏙️ Does Biznest work outside Metro Manila?",
+    answer:
+      "Currently, Biznest focuses on Metro Manila. We're working on expanding to other regions soon.",
+  },
+  {
+    question: "🧾 Is Biznest free to use?",
+    answer:
+      "Yes! You can use core features like evaluation and location browsing for free. Additional tools may be added in future updates.",
+  },
+  {
+    question: " 🛠️ I'm experiencing a bug or issue. What should I do?",
+    answer:
+      "Please contact us via the Help & Feedback section in the app. We'd love to fix it and improve your experience!",
+  },
+];
