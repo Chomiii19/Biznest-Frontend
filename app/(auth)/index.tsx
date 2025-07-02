@@ -45,7 +45,10 @@ const Login = () => {
             </Text>
           </TouchableOpacity>
 
-          <PlatformPressable className="w-full py-3 bg-[#6856CF] rounded-xl flex justify-center items-center">
+          <PlatformPressable
+            onPress={() => router.push("/(tabs)/home")}
+            className="w-full py-3 bg-[#6856CF] rounded-xl flex justify-center items-center"
+          >
             <Text className="text-zinc-300 font-rBold text-sm">Log In</Text>
           </PlatformPressable>
 

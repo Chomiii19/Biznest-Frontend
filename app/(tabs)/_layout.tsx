@@ -8,7 +8,7 @@ function TabsLayout() {
       tabBar={(props) => <BottomTabBar {...props} />}
     >
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{ title: "Home", tabBarLabel: "home" }}
       />
       <Tabs.Screen
