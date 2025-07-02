@@ -82,6 +82,7 @@ const ChangePassword = () => {
           {/* Save Button */}
           <TouchableOpacity
             onPress={clearStates}
+            disabled={!password}
             className={`w-full rounded-xl justify-between items-center py-3 ${password ? "bg-primary" : "bg-zinc-700"}`}
           >
             <Text
