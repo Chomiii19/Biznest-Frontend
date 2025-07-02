@@ -13,6 +13,7 @@ import { Alert } from "react-native";
 import React, { useState } from "react";
 import { router } from "expo-router";
 import icons from "../../constants/icons";
+import Input from "../../components/Input";
 
 const EditProfile = () => {
   const [firstname, setFirstname] = useState("");
@@ -72,7 +73,7 @@ const EditProfile = () => {
                 placeholderTextColor={"#71717a"}
                 value={firstname}
                 onChangeText={setFirstname}
-                className="border border-zinc-800 bg-light-black rounded-xl font-rRegular text-zinc-300 px-2"
+                className="border border-zinc-800 bg-light-black/80 rounded-xl font-rRegular text-zinc-300 px-2"
               />
             </View>
             <View className="flex-1 flex-col">
@@ -84,13 +85,13 @@ const EditProfile = () => {
                 placeholderTextColor={"#71717a"}
                 value={surname}
                 onChangeText={setSurname}
-                className="border border-zinc-800 bg-light-black rounded-xl font-rRegular text-zinc-300 px-2"
+                className="border border-zinc-800 bg-light-black/80 rounded-xl font-rRegular text-zinc-300 px-2"
               />
             </View>
           </View>
 
           {/* Username */}
-          <View className="w-1/2 flex-col">
+          <View className="w-full flex-col">
             <Text className="text-zinc-500 text-sm font-rRegular">
               Username
             </Text>
@@ -99,20 +100,19 @@ const EditProfile = () => {
               placeholderTextColor={"#71717a"}
               value={username}
               onChangeText={setUsername}
-              className="border border-zinc-800 bg-light-black rounded-xl font-rRegular text-zinc-300 px-2"
+              className="border border-zinc-800 bg-light-black/80 rounded-xl font-rRegular text-zinc-300 px-2"
             />
           </View>
 
           {/* Email */}
-          <View className="w-1/2 flex-col">
+          <View className="w-full flex-col">
             <Text className="text-zinc-500 text-sm font-rRegular">Email</Text>
-            <TextInput
-              keyboardType="email-address"
-              placeholder="jomari123@gmail.com"
-              placeholderTextColor={"#71717a"}
+
+            <Input
+              type="email"
               value={email}
-              onChangeText={setEmail}
-              className="border border-zinc-800 bg-light-black rounded-xl font-rRegular text-zinc-300 px-2"
+              setInput={setEmail}
+              placeholder="jomari123@gmail.com"
             />
           </View>
 

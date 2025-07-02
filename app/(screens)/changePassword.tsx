@@ -13,6 +13,7 @@ import { Alert } from "react-native";
 import React, { useState } from "react";
 import { router } from "expo-router";
 import icons from "../../constants/icons";
+import Input from "../../components/Input";
 
 const ChangePassword = () => {
   const [password, setPassword] = useState("");
@@ -53,30 +54,7 @@ const ChangePassword = () => {
         <View className="p-4 flex-col w-full gap-5">
           {/* Password */}
           <View className="w-full flex-col">
-            <Text className="text-zinc-500 text-sm font-rRegular">
-              Password
-            </Text>
-            <View className="w-full flex-row">
-              <TextInput
-                placeholder="*******"
-                secureTextEntry={!showPassword}
-                placeholderTextColor={"#71717a"}
-                value={password}
-                onChangeText={setPassword}
-                className="border border-zinc-800 bg-light-black rounded-xl font-rRegular text-zinc-300 px-2 w-full"
-              />
-              <TouchableOpacity
-                className="absolute right-4 self-center"
-                onPress={() => setShowPassword((prev) => !prev)}
-              >
-                <Image
-                  source={showPassword ? icons.eyeClose : icons.eye}
-                  className="h-7 w-7 -scale-x-[1]"
-                  resizeMode="contain"
-                  tintColor={"#71717a"}
-                />
-              </TouchableOpacity>
-            </View>
+            <Input type="password" value={password} setInput={setPassword} />
           </View>
 
           {/* Save Button */}

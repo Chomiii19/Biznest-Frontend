@@ -132,7 +132,7 @@ function Posts() {
             <View className="flex-row gap-1 items-center">
               <Image
                 source={icons.peso}
-                tintColor={"#7862BF"}
+                tintColor={"#6856CF"}
                 className="h-5 w-5"
                 resizeMode="contain"
               />
@@ -146,7 +146,7 @@ function Posts() {
             <View className="flex-row gap-1 items-center">
               <Image
                 source={icons.pin}
-                tintColor={"#7862BF"}
+                tintColor={"#6856CF"}
                 className="h-5 w-5"
                 resizeMode="contain"
               />
@@ -177,7 +177,7 @@ function Posts() {
                   >
                     <Image
                       source={hasHearted ? icons["heart-fill"] : icons.heart}
-                      tintColor={hasHearted ? "#7862BF" : "#848483"}
+                      tintColor={hasHearted ? "#6856CF" : "#848483"}
                       className="h-5 w-5"
                       resizeMode="contain"
                     />

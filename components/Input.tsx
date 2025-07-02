@@ -6,6 +6,7 @@ type InputParam = {
   type: "email" | "password" | "username";
   value: string;
   label?: string;
+  placeholder?: string;
   borderColor?: string;
   setInput: React.Dispatch<React.SetStateAction<string>>;
 };
@@ -14,6 +15,7 @@ export default function Input({
   type,
   value,
   label,
+  placeholder,
   borderColor = "#27272a",
   setInput,
 }: InputParam) {
@@ -49,7 +51,10 @@ export default function Input({
         <TextInput
           secureTextEntry={type === "password" && !showPassword}
           keyboardType={type === "email" ? "email-address" : "default"}
-          placeholder={`${type.slice(0, 1).toUpperCase().concat(type.slice(1, type.length))}`}
+          placeholder={
+            placeholder ||
+            `${type.slice(0, 1).toUpperCase().concat(type.slice(1, type.length))}`
+          }
           placeholderTextColor={"#52525b"}
           onChangeText={validate}
           value={value}

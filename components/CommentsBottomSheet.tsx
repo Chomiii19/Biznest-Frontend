@@ -220,7 +220,7 @@ function CommentComponent({
             >
               <Image
                 source={isUpvoted ? icons["arrowUp-fill"] : icons.arrowUp}
-                tintColor={isUpvoted ? "#7862BF" : "#848483"}
+                tintColor={isUpvoted ? "#6856CF" : "#848483"}
                 className="h-5 w-5 scale-y-[-1]"
                 resizeMode="contain"
               />
