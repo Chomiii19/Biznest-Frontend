@@ -32,8 +32,8 @@ export default function RootLayout() {
       <EvaluateBottomSheetProvider>
         <CommentBottomSheetProvider>
           <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="(screens)" options={{ headerShown: false }} />
           </Stack>
         </CommentBottomSheetProvider>

@@ -5,6 +5,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   TouchableOpacity,
+  StatusBar,
 } from "react-native";
 import { PlatformPressable } from "@react-navigation/elements";
 import React, { useState } from "react";
@@ -19,6 +20,7 @@ const Login = () => {
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View className="flex-1 bg-backgroundColor">
+        <StatusBar barStyle={"light-content"} />
         <View className="w-full flex-row justify-center mt-10">
           <Image
             source={icons.icon}
