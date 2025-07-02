@@ -117,6 +117,7 @@ const EditProfile = () => {
 
           {/* Save Button */}
           <TouchableOpacity
+            onPress={clearStates}
             className={`w-full rounded-xl justify-between items-center py-3 ${hasChanges() ? "bg-primary" : "bg-zinc-700"}`}
           >
             <Text
