@@ -32,6 +32,8 @@ const icons = {
   setting: require("../assets/icons/setting.png"),
   arrowUp: require("../assets/icons/arrowUp.png"),
   evidence: require("../assets/icons/evidence.png"),
+  google: require("../assets/icons/google.png"),
+  facebook: require("../assets/icons/facebook.png"),
   logout: require("../assets/icons/logout.png"),
   gps: require("../assets/icons/gps.png"),
   star: require("../assets/icons/star.png"),

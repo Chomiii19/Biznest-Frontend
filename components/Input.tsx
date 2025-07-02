@@ -1,5 +1,6 @@
-import { View, Text, TextInput } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Image } from "react-native";
 import React, { useState } from "react";
+import icons from "../constants/icons";
 
 type InputParam = {
   type: "email" | "password" | "username";
@@ -13,43 +14,71 @@ export default function Input({
   type,
   value,
   label,
-  borderColor = "#6856CF",
+  borderColor = "#27272a",
   setInput,
 }: InputParam) {
-  const [error, setError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   const validate = (text: string) => {
     if (type === "email") {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      setError(emailRegex.test(text) ? null : "Invalid email address");
+      setEmailError(emailRegex.test(text) ? "" : "Invalid email address");
     }
 
     if (type === "password") {
-      setError(
-        text.length >= 8 ? null : "Password must be at least 8 characters"
+      setPasswordError(
+        text.length >= 8 ? "" : "Password must be at least 8 characters",
       );
     }
 
     setInput(text);
   };
 
+  const currentBorderColor =
+    (type === "email" && emailError) || (type === "password" && passwordError)
+      ? "red"
+      : borderColor;
+
   return (
-    <View className="py-1 px-2">
+    <View className="py-1 w-full">
       {label && <Text className="text-black mb-1">{label}</Text>}
 
-      <TextInput
-        secureTextEntry={type === "password"}
-        keyboardType={type === "email" ? "email-address" : "default"}
-        placeholder={`${type.slice(0, 1).toUpperCase().concat(type.slice(1, type.length))}...`}
-        onChangeText={validate}
-        value={value}
-        className="border-[1px] rounded-lg px-3 py-2 text-gray-900"
-        style={{
-          borderColor: error ? "red" : borderColor,
-        }}
-      />
+      <View className="w-full flex-row">
+        <TextInput
+          secureTextEntry={type === "password" && !showPassword}
+          keyboardType={type === "email" ? "email-address" : "default"}
+          placeholder={`${type.slice(0, 1).toUpperCase().concat(type.slice(1, type.length))}`}
+          placeholderTextColor={"#52525b"}
+          onChangeText={validate}
+          value={value}
+          className="border rounded-xl px-3 py-4 text-zinc-300 font-rRegular w-full bg-light-black/80"
+          style={{
+            borderColor: currentBorderColor,
+          }}
+        />
+        {type === "password" && (
+          <TouchableOpacity
+            className="absolute right-4 self-center"
+            onPress={() => setShowPassword((prev) => !prev)}
+          >
+            <Image
+              source={showPassword ? icons.eyeClose : icons.eye}
+              className="h-7 w-7 -scale-x-[1]"
+              resizeMode="contain"
+              tintColor={"#71717a"}
+            />
+          </TouchableOpacity>
+        )}
+      </View>
 
-      {error && <Text className="text-red-500 text-xs mt-1">{error}</Text>}
+      {passwordError && (
+        <Text className="text-red-500 text-xs mt-1">{passwordError}</Text>
+      )}
+      {emailError && (
+        <Text className="text-red-500 text-xs mt-1">{emailError}</Text>
+      )}
     </View>
   );
 }

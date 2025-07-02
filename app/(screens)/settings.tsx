@@ -203,7 +203,10 @@ const Settings = () => {
               tintColor={"#d4d4d8"}
             />
           </PlatformPressable>
-          <PlatformPressable className="px-4 py-2 flex-row items-center pr-5 justify-between border border-t-0 border-zinc-700 rounded-b-xl">
+          <PlatformPressable
+            onPress={() => router.push("/(auth)/login")}
+            className="px-4 py-2 flex-row items-center pr-5 justify-between border border-t-0 border-zinc-700 rounded-b-xl"
+          >
             <Text className="text-red-500 font-rRegular">Log out</Text>
             <Image
               source={icons.logout}

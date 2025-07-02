@@ -33,7 +33,7 @@ export default function ScreensLayout() {
         options={{ animation: "slide_from_bottom" }}
       />
       <Stack.Screen
-        name="ReportIssue"
+        name="reportIssue"
         options={{ animation: "slide_from_right" }}
       />
       <Stack.Screen
