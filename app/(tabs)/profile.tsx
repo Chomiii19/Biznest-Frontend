@@ -35,7 +35,7 @@ const Profile = () => {
         <Text className="text-5xl text-zinc-300 font-rBold">JB</Text>
       </View>
 
-      <View className="bg-light-black rounded-3xl w-full mt-24">
+      <View className="bg-light-black rounded-3xl w-full mt-24 pb-5">
         <View className="flex-col items-center justify-center w-full mt-24">
           <View className="flex-row items-center gap-1">
             <Text className="text-zinc-300 font-rBold text-2xl">
@@ -48,7 +48,7 @@ const Profile = () => {
           <Text className="text-zinc-500 font-rRegular">chomi_b</Text>
         </View>
 
-        <View className="w-full flex-row px-20 justify-between items-center py-5">
+        {/* <View className="w-full flex-row px-20 justify-between items-center py-5">
           <View className="flex-col items-center justify-center">
             <Text className="font-rSemibold text-zinc-300 text-xl">
               {formatCount(362)}
@@ -67,7 +67,13 @@ const Profile = () => {
             </Text>
             <Text className="font-rRegular text-zinc-500">Likes</Text>
           </View>
-        </View>
+        </View> */}
+      </View>
+
+      <View>
+        <Text className="color-white mt-2 text-center w-full">
+          Past Evaluations
+        </Text>
       </View>
 
       <ScrollView className="mt-6">
@@ -88,7 +94,7 @@ const Profile = () => {
                 end={{ x: 0, y: 1 }}
                 className="h-full w-full absolute opacity-80"
               />
-              <View className="flex-row items-center gap-2 absolute bottom-1 right-3">
+              {/* <View className="flex-row items-center gap-2 absolute bottom-1 right-3">
                 <View className="flex-row items-center gap-1">
                   <Image
                     source={icons.heart}
@@ -111,6 +117,12 @@ const Profile = () => {
                     {formatCount(post.comment_count)}
                   </Text>
                 </View>
+              </View> */}
+
+              <View className="flex-row items-center gap-2 absolute bottom-1 right-3 ">
+                <Text className="text-zinc-500">Lat:</Text>
+                <Text className="text-zinc-500">Long:</Text>
+                <Text className="text-zinc-500">Amenity:</Text>
               </View>
             </TouchableOpacity>
           ))}
