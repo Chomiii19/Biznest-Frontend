@@ -1,3 +1,4 @@
+import React from 'react'
 import { View, Image, Text, Pressable } from "react-native";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import icons from "../constants/icons";

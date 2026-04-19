@@ -25,10 +25,6 @@ export default function ScreensLayout() {
         options={{ animation: "slide_from_right" }}
       />
       <Stack.Screen
-        name="messages"
-        options={{ animation: "slide_from_bottom" }}
-      />
-      <Stack.Screen
         name="notifications"
         options={{ animation: "slide_from_bottom" }}
       />
@@ -43,10 +39,6 @@ export default function ScreensLayout() {
       <Stack.Screen
         name="settings"
         options={{ animation: "slide_from_bottom" }}
-      />
-      <Stack.Screen
-        name="viewConversation"
-        options={{ animation: "slide_from_right" }}
       />
       <Stack.Screen
         name="viewPost"

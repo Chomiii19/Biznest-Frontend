@@ -11,7 +11,7 @@ import React, { useState } from "react";
 import icons from "../../constants/icons";
 import Input from "../../components/Input";
 import { router } from "expo-router";
-import { TextInput } from "react-native-gesture-handler";
+import { TextInput } from "react-native";
 
 const Signup = () => {
   const [email, setEmail] = useState("");

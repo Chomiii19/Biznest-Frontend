@@ -4,13 +4,13 @@ import {
   Image,
   TouchableOpacity,
   Keyboard,
+  TextInput,
   TouchableWithoutFeedback,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import React, { useEffect, useState } from "react";
 import icons from "../../constants/icons";
 import { router, useLocalSearchParams } from "expo-router";
-import { TextInput } from "react-native-gesture-handler";
 import ImageResolution from "../../components/ImageResolution";
 import reverseGeocode from "../../utils/reverseGeocode";
 
