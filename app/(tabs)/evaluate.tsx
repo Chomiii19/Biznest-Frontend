@@ -1,6 +1,5 @@
 import {
   View,
-  Text,
   StyleSheet,
   TouchableWithoutFeedback,
   Keyboard,
@@ -14,7 +13,7 @@ import MapView, {
   Marker,
 } from "react-native-maps";
 import * as Location from "expo-location";
-import { mapTileStyleLight, mapTileStyleDark } from "../../styles/mapTileStyle";
+import { mapTileStyleDark } from "../../styles/mapTileStyle";
 import SearchBar from "../../components/SearchBar";
 import { ICoords } from "../../@types/interfaces";
 import reverseGeocode from "../../utils/reverseGeocode";
@@ -22,6 +21,7 @@ import icons from "../../constants/icons";
 import { useEvaluateBottomSheet } from "../../context/evaluateBottomSheetContext";
 import forwardGeocoding from "../../utils/forwardGeocode";
 import ShowUserLocation from "../../components/ShowUserLocation";
+import { useLocalSearchParams } from "expo-router";
 
 const INITIAL_REGION = {
   latitude: 14.5995,
@@ -36,20 +36,28 @@ const Evaluate = () => {
     null,
   );
   const [address, setAddress] = useState("");
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const { openBottomSheet } = useEvaluateBottomSheet();
+
+  // Params passed from bookmarks screen
+  const params = useLocalSearchParams<{ lat?: string; lng?: string }>();
 
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        setErrorMsg("Permission to access location was denied");
-        return;
-      }
-
+      if (status !== "granted") return;
       focusUserLocation();
     })();
   }, []);
+
+  // Navigate to bookmark location when params arrive
+  useEffect(() => {
+    if (!params.lat || !params.lng) return;
+    const lat = parseFloat(params.lat);
+    const lng = parseFloat(params.lng);
+    setSelectedLocation({ latitude: lat, longitude: lng });
+    animateTo(lat, lng);
+    openBottomSheet({ lat, lng });
+  }, [params.lat, params.lng]);
 
   const focusUserLocation = async () => {
     const { coords } = await Location.getCurrentPositionAsync({});
@@ -75,7 +83,7 @@ const Evaluate = () => {
     if (!result) return;
     setSelectedLocation(result);
     setAddress(await reverseGeocode(result.latitude, result.longitude));
-    openBottomSheet();
+    openBottomSheet({ lat: result.latitude, lng: result.longitude });
     animateTo(result.latitude, result.longitude);
   };
 
@@ -83,7 +91,7 @@ const Evaluate = () => {
     const { latitude, longitude } = e.nativeEvent.coordinate;
     setSelectedLocation({ latitude, longitude });
     setAddress(await reverseGeocode(latitude, longitude));
-    openBottomSheet();
+    openBottomSheet({ lat: latitude, lng: longitude });
     animateTo(latitude, longitude);
   };
 
@@ -102,17 +110,13 @@ const Evaluate = () => {
           showsCompass={false}
           showsBuildings
           showsUserLocation
-          // showsTraffic
           showsMyLocationButton={false}
         >
           {selectedLocation && (
             <Marker
               coordinate={selectedLocation}
               image={icons["pin-fill2"]}
-              style={{
-                height: 5,
-                width: 5,
-              }}
+              style={{ height: 5, width: 5 }}
             />
           )}
         </MapView>
@@ -131,10 +135,7 @@ const Evaluate = () => {
 };
 
 const styles = StyleSheet.create({
-  map: {
-    width: "100%",
-    height: "100%",
-  },
+  map: { width: "100%", height: "100%" },
 });
 
 export default Evaluate;

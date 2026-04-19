@@ -7,14 +7,14 @@ function TabsLayout() {
       screenOptions={{ headerShown: false, animation: "shift" }}
       tabBar={(props) => <BottomTabBar {...props} />}
     >
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name="home"
         options={{ title: "Home", tabBarLabel: "home" }}
       />
       <Tabs.Screen
         name="rents"
         options={{ title: "Rents", tabBarLabel: "rent" }}
-      />
+      /> */}
       <Tabs.Screen
         name="evaluate"
         options={{ title: "Evaluate", tabBarLabel: "locate" }}

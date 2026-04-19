@@ -132,9 +132,9 @@ export const posts = [
 ];
 
 export const businessTypes = [
-  "Food Stall",
-  "Milk Tea Shop",
-  "Café",
+  "supermarket",
+  "apparel",
+  "cafe",
   "Sari-Sari Store",
   "Retail",
   "Boutique",

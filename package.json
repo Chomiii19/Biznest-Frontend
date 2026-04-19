@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "@gorhom/bottom-sheet": "^5.1.6",
+    "@react-native-async-storage/async-storage": "2.1.2",
     "@types/react": "~19.1.10",
+    "axios": "^1.15.0",
     "date-fns": "^4.1.0",
     "expo": "^53.0.21",
     "expo-constants": "~17.1.7",
@@ -30,7 +32,6 @@
     "react-native-reanimated": "~3.17.4",
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.11.1",
-    "react-native-worklets": "0.5.1",
     "typescript": "~5.9.2"
   },
   "devDependencies": {

@@ -7,6 +7,7 @@ import {
   TextInputSubmitEditingEventData,
 } from "react-native";
 import icons from "../constants/icons";
+import { router } from "expo-router";
 
 function SearchBar({
   input,
@@ -44,11 +45,20 @@ function SearchBar({
         onSubmitEditing={handleSearchedInput}
         className="flex-1 font-rRegular text-zinc-300 mx-2"
       />
-      {input && (
+      {input ? (
         <TouchableOpacity onPress={() => setInput("")}>
           <Image
             source={icons.x}
             className="h-4 w-4"
+            tintColor={"#848483"}
+            resizeMode="contain"
+          />
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity onPress={() => router.push("/(screens)/bookmarks")}>
+          <Image
+            source={icons.bookmark}
+            className="h-5 w-5"
             tintColor={"#848483"}
             resizeMode="contain"
           />

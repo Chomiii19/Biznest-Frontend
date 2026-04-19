@@ -56,6 +56,14 @@ export default function ScreensLayout() {
         name="viewProfile"
         options={{ animation: "slide_from_right" }}
       />
+      <Stack.Screen
+        name="bookmarks"
+        options={{ animation: "slide_from_right" }}
+      />
+      <Stack.Screen
+        name="evaluateResult"
+        options={{ animation: "slide_from_right" }}
+      />
     </Stack>
   );
 }

@@ -5,13 +5,18 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   TouchableOpacity,
+  TextInput,
+  Alert,
+  ActivityIndicator,
 } from "react-native";
 import { PlatformPressable } from "@react-navigation/elements";
 import React, { useState } from "react";
 import icons from "../../constants/icons";
 import Input from "../../components/Input";
 import { router } from "expo-router";
-import { TextInput } from "react-native-gesture-handler";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import api from "../../configs/api";
 
 const Signup = () => {
   const [email, setEmail] = useState("");
@@ -19,6 +24,38 @@ const Signup = () => {
   const [surname, setSurname] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSignup = async () => {
+    if (!firstname || !surname || !username || !email || !password) {
+      Alert.alert("Error", "Please fill in all fields.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { data } = await api.post("/api/v1/auth/signup", {
+        firstname,
+        surname,
+        username,
+        email,
+        password,
+      });
+      await AsyncStorage.setItem("token", data.token);
+      router.push("/(tabs)/evaluate");
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        Alert.alert(
+          "Sign Up Failed",
+          error.response?.data?.message || "Could not create account.",
+        );
+      } else {
+        Alert.alert("Error", "Something went wrong. Please try again.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -65,14 +102,18 @@ const Signup = () => {
           />
 
           <Input type="email" value={email} setInput={setEmail} />
-
           <Input type="password" value={password} setInput={setPassword} />
 
           <PlatformPressable
-            onPress={() => router.push("/(tabs)/home")}
+            onPress={handleSignup}
+            disabled={loading}
             className="w-full py-3 bg-[#6856CF] rounded-xl flex justify-center items-center"
           >
-            <Text className="text-zinc-300 font-rBold text-sm">Sign Up</Text>
+            {loading ? (
+              <ActivityIndicator color="#d4d4d8" />
+            ) : (
+              <Text className="text-zinc-300 font-rBold text-sm">Sign Up</Text>
+            )}
           </PlatformPressable>
 
           <View className="flex w-full items-center justify-center my-5">
@@ -105,7 +146,7 @@ const Signup = () => {
             <Text className="text-zinc-500 font-rRegular text-sm">
               Already have an account?
             </Text>
-            <TouchableOpacity onPress={() => router.push("/login")}>
+            <TouchableOpacity onPress={() => router.push("/")}>
               <Text className="text-zinc-300 font-rBold text-sm">Log In</Text>
             </TouchableOpacity>
           </View>

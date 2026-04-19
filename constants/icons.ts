@@ -43,6 +43,7 @@ const icons = {
   "pin-fill2": require("../assets/icons/pin-fill2.png"),
   "arrowUp-fill": require("../assets/icons/arrowUp-fill.png"),
   "bookmark-fill": require("../assets/icons/bookmark-fill.png"),
+  "chevron-left": require("../assets/icons/chevron-left.png"),
 };
 
 export default icons;
