@@ -41,18 +41,18 @@ export default function RootLayout() {
     setIsReady(true); // only mark ready when both are resolved
   }, [token, fontsLoaded]);
 
-  useEffect(() => {
-    if (!isReady) return;
-    if (!segments[0]) return;
+  // useEffect(() => {
+  //   if (!isReady) return;
+  //   if (!segments[0]) return;
 
-    const inAuthGroup = segments[0] === "(auth)";
+  //   const inAuthGroup = segments[0] === "(auth)";
 
-    if (token && inAuthGroup) {
-      router.replace("/(tabs)/evaluate");
-    } else if (!token && !inAuthGroup) {
-      router.replace("/(auth)");
-    }
-  }, [isReady, segments, token]);
+  //   if (token && inAuthGroup) {
+  //     router.replace("/(tabs)/evaluate");
+  //   } else if (!token && !inAuthGroup) {
+  //     router.replace("/(auth)");
+  //   }
+  // }, [isReady, segments, token]);
 
   if (!fontsLoaded && !error) return null;
 
