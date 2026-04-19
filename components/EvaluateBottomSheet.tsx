@@ -138,7 +138,7 @@ function EvaluateBottomSheet() {
         </View>
 
         {/* Rents Nearby */}
-        <Text className="font-rRegular text-zinc-300 mt-2 px-4 mb-1">
+        {/* <Text className="font-rRegular text-zinc-300 mt-2 px-4 mb-1">
           Rents Nearby
         </Text>
         <BottomSheetScrollView
@@ -183,10 +183,10 @@ function EvaluateBottomSheet() {
               />
             </Pressable>
           ))}
-        </BottomSheetScrollView>
+        </BottomSheetScrollView> */}
 
         {/* Environment Summary */}
-        <View className="w-full px-4 flex-row justify-between items-center mt-6">
+        {/* <View className="w-full px-4 flex-row justify-between items-center mt-6">
           <Text className="font-rRegular text-zinc-300 mb-1">
             Environment Summary
           </Text>
@@ -219,7 +219,7 @@ function EvaluateBottomSheet() {
               </Text>
             </View>
           </BottomSheetScrollView>
-        </View>
+        </View> */}
 
         {/* Evaluate Section */}
         <Text className="font-rRegular text-zinc-300 mb-1 ml-4 mt-6">
