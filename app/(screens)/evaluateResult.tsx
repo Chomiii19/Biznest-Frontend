@@ -10,8 +10,11 @@ import {
 } from "react-native";
 import { useEffect, useRef } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import icons from "../../constants/icons";
+
+// ─── Types ────────────────────────────────────────────────────────────────────
 
 interface TopFactor {
   amenity: string;
@@ -23,6 +26,27 @@ interface FactorLocation {
   index: number;
   lat: number;
   lon: number;
+}
+
+interface DemographicData {
+  population_2020: number;
+  avg_family_income_php: number;
+  pop_density_per_km2: number;
+  growth_rate_pct: number;
+  working_age_pct: number;
+  youth_pct: number;
+  senior_pct: number;
+  purchasing_power_b_php: number;
+}
+
+interface DemographicDetails {
+  city: string;
+  overall_demographic_score: number;
+  rank: number;
+  total_cities: number;
+  market_archetype: string;
+  demographics: DemographicData;
+  insights: string[];
 }
 
 interface EvaluateResult {
@@ -42,9 +66,11 @@ interface EvaluateResult {
       lat: number;
       lon: number;
     };
-    demographic: number;
+    demographic: DemographicDetails | null;
   };
 }
+
+// ─── Constants ────────────────────────────────────────────────────────────────
 
 const AMENITY_ICONS: Record<string, string> = {
   "fast food": "🍔",
@@ -78,7 +104,15 @@ const RELEVANCE_COLORS = [
   "#9d7ff4",
 ];
 
-function ScoreRing({ score }: { score: number }) {
+// ─── ScoreRing ────────────────────────────────────────────────────────────────
+
+function ScoreRing({
+  score,
+  amenityType,
+}: {
+  score: number;
+  amenityType: string;
+}) {
   const animVal = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -91,10 +125,6 @@ function ScoreRing({ score }: { score: number }) {
   }, [score]);
 
   const SIZE = 120;
-  const STROKE = 8;
-  const R = (SIZE - STROKE) / 2;
-  const CIRC = 2 * Math.PI * R;
-
   const pct = Math.round(score * 100);
   const scoreColor =
     score >= 0.75 ? "#3ecf8e" : score >= 0.5 ? "#f5a623" : "#f06060";
@@ -127,12 +157,17 @@ function ScoreRing({ score }: { score: number }) {
       <View style={styles.ringInfo}>
         <Text style={styles.ringTitle}>{label}</Text>
         <Text style={styles.ringBusiness} numberOfLines={1}>
-          Best for: <Text style={{ color: "#9d7ff4" }}>Hardware Store</Text>
+          Best for:{" "}
+          <Text style={{ color: "#9d7ff4" }}>
+            {amenityType.charAt(0).toUpperCase() + amenityType.slice(1)}
+          </Text>
         </Text>
       </View>
     </View>
   );
 }
+
+// ─── SubScorePill ─────────────────────────────────────────────────────────────
 
 function SubScorePill({
   label,
@@ -179,6 +214,8 @@ function SubScorePill({
   );
 }
 
+// ─── FactorRow ────────────────────────────────────────────────────────────────
+
 function FactorRow({ factor, index }: { factor: TopFactor; index: number }) {
   const color = RELEVANCE_COLORS[index % RELEVANCE_COLORS.length];
   const icon = AMENITY_ICONS[factor.amenity.toLowerCase()] ?? "📍";
@@ -210,6 +247,8 @@ function FactorRow({ factor, index }: { factor: TopFactor; index: number }) {
   );
 }
 
+// ─── AmenityChip ──────────────────────────────────────────────────────────────
+
 function AmenityChip({
   label,
   count,
@@ -229,6 +268,144 @@ function AmenityChip({
   );
 }
 
+// ─── DemographicsSection ──────────────────────────────────────────────────────
+
+function DemographicsSection({ demo }: { demo: DemographicDetails }) {
+  const d = demo.demographics;
+
+  const formatIncome = (php: number) => {
+    if (php >= 1_000_000) return `₱${(php / 1_000_000).toFixed(2)}M`;
+    if (php >= 1_000) return `₱${(php / 1_000).toFixed(0)}K`;
+    return `₱${php}`;
+  };
+
+  const formatPop = (n: number) => {
+    if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(2)}M`;
+    if (n >= 1_000) return `${(n / 1_000).toFixed(0)}K`;
+    return `${n}`;
+  };
+
+  const archetypeColor =
+    demo.market_archetype === "Premium Urban"
+      ? "#9d7ff4"
+      : demo.market_archetype === "Dense Urban"
+        ? "#4f9ef5"
+        : demo.market_archetype === "Emerging Urban"
+          ? "#f5a623"
+          : "#3ecf8e";
+
+  const statItems = [
+    { label: "Population", value: formatPop(d.population_2020), emoji: "👥" },
+    {
+      label: "Avg. Income",
+      value: formatIncome(d.avg_family_income_php),
+      emoji: "💰",
+    },
+    {
+      label: "Density /km²",
+      value: `${(d.pop_density_per_km2 / 1000).toFixed(1)}K`,
+      emoji: "🏙",
+    },
+    { label: "Growth Rate", value: `+${d.growth_rate_pct}%`, emoji: "📈" },
+  ];
+
+  const ageItems = [
+    { label: "Youth", pct: d.youth_pct, color: "#4f9ef5" },
+    { label: "Working Age", pct: d.working_age_pct, color: "#3ecf8e" },
+    { label: "Senior", pct: d.senior_pct, color: "#f5a623" },
+  ];
+
+  return (
+    <View style={styles.section}>
+      {/* Section header */}
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>Demographics</Text>
+        <View
+          style={[
+            demoStyles.archetypeBadge,
+            {
+              borderColor: archetypeColor + "55",
+              backgroundColor: archetypeColor + "15",
+            },
+          ]}
+        >
+          <Text style={[demoStyles.archetypeText, { color: archetypeColor }]}>
+            {demo.market_archetype}
+          </Text>
+        </View>
+      </View>
+
+      {/* City rank banner */}
+      <View style={demoStyles.rankBanner}>
+        <View style={demoStyles.rankLeft}>
+          <Text style={demoStyles.rankEmoji}>🏙</Text>
+          <View>
+            <Text style={demoStyles.rankCity}>{demo.city}</Text>
+            <Text style={demoStyles.rankSub}>NCR Demographic Rank</Text>
+          </View>
+        </View>
+        <View style={demoStyles.rankRight}>
+          <Text style={demoStyles.rankNum}>#{demo.rank}</Text>
+          <Text style={demoStyles.rankOf}>of {demo.total_cities}</Text>
+        </View>
+      </View>
+
+      {/* Stat grid */}
+      <View style={demoStyles.statGrid}>
+        {statItems.map((s) => (
+          <View key={s.label} style={demoStyles.statCell}>
+            <Text style={demoStyles.statEmoji}>{s.emoji}</Text>
+            <Text style={demoStyles.statValue}>{s.value}</Text>
+            <Text style={demoStyles.statLabel}>{s.label}</Text>
+          </View>
+        ))}
+      </View>
+
+      {/* Age structure */}
+      <View style={demoStyles.ageCard}>
+        <Text style={demoStyles.ageTitle}>Age Structure</Text>
+        <View style={demoStyles.ageBar}>
+          {ageItems.map((a) => (
+            <View
+              key={a.label}
+              style={[
+                demoStyles.ageBarSegment,
+                { flex: a.pct, backgroundColor: a.color },
+              ]}
+            />
+          ))}
+        </View>
+        <View style={demoStyles.ageLegend}>
+          {ageItems.map((a) => (
+            <View key={a.label} style={demoStyles.ageLegendItem}>
+              <View style={[demoStyles.ageDot, { backgroundColor: a.color }]} />
+              <Text style={demoStyles.ageLegendLabel}>{a.label}</Text>
+              <Text style={[demoStyles.ageLegendPct, { color: a.color }]}>
+                {a.pct.toFixed(1)}%
+              </Text>
+            </View>
+          ))}
+        </View>
+      </View>
+
+      {/* Insights */}
+      {demo.insights?.length > 0 && (
+        <View style={demoStyles.insightsBox}>
+          <Text style={demoStyles.insightsTitle}>📊 Key Insights</Text>
+          {demo.insights.map((insight, i) => (
+            <View key={i} style={demoStyles.insightRow}>
+              <View style={demoStyles.insightDot} />
+              <Text style={demoStyles.insightText}>{insight}</Text>
+            </View>
+          ))}
+        </View>
+      )}
+    </View>
+  );
+}
+
+// ─── Main Screen ──────────────────────────────────────────────────────────────
+
 export default function EvaluateResultScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
@@ -241,7 +418,51 @@ export default function EvaluateResultScreen() {
 
   const result: EvaluateResult = JSON.parse(params.result ?? "{}");
   const amenityType = params.amenityType ?? "Business";
-  console.log(result);
+
+  useEffect(() => {
+    const save = async () => {
+      try {
+        const key = "evaluate_results_v1";
+        const raw = await AsyncStorage.getItem(key);
+        const stored: {
+          amenityType: string;
+          finalScore: number;
+          lat: number;
+          lng: number;
+          timestamp: number;
+        }[] = raw ? JSON.parse(raw) : [];
+
+        const lat = parseFloat(params.lat ?? "0");
+        const lng = parseFloat(params.lng ?? "0");
+
+        const filtered = stored.filter(
+          (s) =>
+            !(
+              s.amenityType === amenityType &&
+              Math.abs(s.lat - lat) < 0.0005 &&
+              Math.abs(s.lng - lng) < 0.0005
+            ),
+        );
+
+        await AsyncStorage.setItem(
+          key,
+          JSON.stringify(
+            [
+              {
+                amenityType,
+                finalScore: result.finalScore,
+                lat,
+                lng,
+                timestamp: Date.now(),
+              },
+              ...filtered,
+            ].slice(0, 50),
+          ),
+        );
+      } catch {}
+    };
+    save();
+  }, []);
 
   const {
     finalScore,
@@ -312,7 +533,7 @@ export default function EvaluateResultScreen() {
       >
         {/* Score Card */}
         <View style={styles.card}>
-          <ScoreRing score={finalScore} />
+          <ScoreRing score={finalScore} amenityType={amenityType} />
           <View style={styles.subScoreRow}>
             <SubScorePill
               label="Environment"
@@ -339,7 +560,7 @@ export default function EvaluateResultScreen() {
           </View>
         </View>
 
-        {/* Flood risk */}
+        {/* Flood Risk */}
         <View
           style={[
             styles.floodCard,
@@ -411,6 +632,11 @@ export default function EvaluateResultScreen() {
           </View>
         )}
 
+        {/* Demographics */}
+        {details?.demographic && (
+          <DemographicsSection demo={details.demographic} />
+        )}
+
         {/* CTA */}
         <View style={styles.ctaRow}>
           <TouchableOpacity style={styles.ctaSecondary}>
@@ -424,6 +650,8 @@ export default function EvaluateResultScreen() {
     </View>
   );
 }
+
+// ─── Styles ───────────────────────────────────────────────────────────────────
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#0f0e10" },
@@ -613,4 +841,123 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   ctaPrimaryText: { fontSize: 13, fontWeight: "700", color: "#fff" },
+});
+
+const demoStyles = StyleSheet.create({
+  archetypeBadge: {
+    borderWidth: 1,
+    borderRadius: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+  },
+  archetypeText: { fontSize: 10, fontWeight: "700", letterSpacing: 0.3 },
+
+  rankBanner: {
+    backgroundColor: "#1a1820",
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.08)",
+    padding: 14,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  rankLeft: { flexDirection: "row", alignItems: "center", gap: 10 },
+  rankEmoji: { fontSize: 22 },
+  rankCity: { fontSize: 13, fontWeight: "600", color: "#e8e6f0" },
+  rankSub: { fontSize: 10, color: "#7a7890", marginTop: 1 },
+  rankRight: { alignItems: "flex-end" },
+  rankNum: { fontSize: 22, fontWeight: "800", color: "#f5a623" },
+  rankOf: { fontSize: 10, color: "#7a7890" },
+
+  statGrid: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  statCell: {
+    flex: 1,
+    backgroundColor: "#1a1820",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.06)",
+    padding: 10,
+    alignItems: "center",
+    gap: 3,
+  },
+  statEmoji: { fontSize: 16 },
+  statValue: { fontSize: 13, fontWeight: "700", color: "#e8e6f0" },
+  statLabel: { fontSize: 9, color: "#7a7890", textAlign: "center" },
+
+  ageCard: {
+    backgroundColor: "#1a1820",
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.08)",
+    padding: 14,
+    gap: 10,
+  },
+  ageTitle: {
+    fontSize: 11,
+    fontWeight: "600",
+    color: "#7a7890",
+    textTransform: "uppercase",
+    letterSpacing: 0.6,
+  },
+  ageBar: {
+    flexDirection: "row",
+    height: 8,
+    borderRadius: 4,
+    overflow: "hidden",
+    gap: 2,
+  },
+  ageBarSegment: { borderRadius: 4 },
+  ageLegend: { flexDirection: "row", justifyContent: "space-between" },
+  ageLegendItem: { flexDirection: "row", alignItems: "center", gap: 5 },
+  ageDot: { width: 7, height: 7, borderRadius: 4 },
+  ageLegendLabel: { fontSize: 10, color: "#7a7890" },
+  ageLegendPct: { fontSize: 11, fontWeight: "700" },
+
+  powerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    backgroundColor: "#1a1820",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.06)",
+    padding: 12,
+  },
+  powerEmoji: { fontSize: 20 },
+  powerLabel: { fontSize: 10, color: "#7a7890" },
+  powerValue: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#3ecf8e",
+    marginTop: 1,
+  },
+
+  insightsBox: {
+    backgroundColor: "#f5a62308",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#f5a62325",
+    padding: 14,
+    gap: 8,
+  },
+  insightsTitle: {
+    fontSize: 11,
+    fontWeight: "700",
+    color: "#f5a623",
+    marginBottom: 2,
+  },
+  insightRow: { flexDirection: "row", gap: 8, alignItems: "flex-start" },
+  insightDot: {
+    width: 5,
+    height: 5,
+    borderRadius: 3,
+    backgroundColor: "#f5a623",
+    marginTop: 5,
+    flexShrink: 0,
+  },
+  insightText: { fontSize: 12, color: "#a09cb0", lineHeight: 18, flex: 1 },
 });

@@ -20,8 +20,8 @@ function TabsLayout() {
         options={{ title: "Evaluate", tabBarLabel: "locate" }}
       />
       <Tabs.Screen
-        name="profile"
-        options={{ title: "Profile", tabBarLabel: "profile" }}
+        name="settings"
+        options={{ title: "Settings", tabBarLabel: "setting" }}
       />
     </Tabs>
   );

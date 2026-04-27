@@ -28,11 +28,17 @@ export const EvaluateBottomSheetProvider = ({
   const [comments, setComments] = useState<IComments[]>([]);
   const [coords, setCoords] = useState<ICoords | null>(null);
   const evaluateBottomSheetRef = useRef<BottomSheet | null>(null);
-  const snapPoints = useMemo(() => ["10%", "50%"], []);
+
+  // Three snap points:
+  // 12%  → collapsed handle only (peek)
+  // 55%  → shows stats + business grid + evaluate CTA
+  // 92%  → full scroll including recents + listings
+  const snapPoints = useMemo(() => ["12%", "55%", "92%"], []);
 
   const openBottomSheet = (coords: ICoords) => {
     setCoords(coords);
-    evaluateBottomSheetRef.current?.expand();
+    // Open to mid snap by default (index 1 = 55%)
+    evaluateBottomSheetRef.current?.snapToIndex(1);
   };
 
   const loadComments = (comments: IComments[]) => setComments(comments);

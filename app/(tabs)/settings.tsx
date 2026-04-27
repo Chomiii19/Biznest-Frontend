@@ -108,14 +108,6 @@ const Settings = () => {
               tintColor="#d4d4d8"
             />
           </PlatformPressable>
-          <View className="px-4 py-2 flex-row justify-between border border-t-0 border-zinc-700 rounded-b-xl">
-            <Text className="text-zinc-300 font-rRegular">Credits: 3</Text>
-            <TouchableOpacity>
-              <Text className="text-primary px-2 py-1 text-xs border border-primary rounded-lg font-rRegular">
-                Buy Credits
-              </Text>
-            </TouchableOpacity>
-          </View>
         </View>
       </View>
 
@@ -124,15 +116,10 @@ const Settings = () => {
         <Text className="text-zinc-300 font-rBold text-2xl">Preferences</Text>
         <View className="flex-col w-full border bg-light-black/80 rounded-xl mt-1">
           <SettingRow
-            label="Dark Mode"
-            value={settings.darkMode}
-            onToggle={() => updateSettings({ darkMode: !settings.darkMode })}
-            isFirst
-          />
-          <SettingRow
             label="App Notifications"
             value={settings.appNotifications}
             onToggle={handleAppNotifications}
+            isFirst
           />
           <SettingRow
             label="Message Alerts"
@@ -187,42 +174,7 @@ const Settings = () => {
               tintColor="#d4d4d8"
             />
           </PlatformPressable>
-          <PlatformPressable
-            onPress={() => router.push("/contactUs")}
-            className="px-4 py-2 flex-row justify-between border border-zinc-700"
-          >
-            <Text className="text-zinc-300 font-rRegular">Contact Us</Text>
-            <Image
-              source={icons.next}
-              className="h-7 w-7"
-              resizeMode="contain"
-              tintColor="#d4d4d8"
-            />
-          </PlatformPressable>
-          <PlatformPressable
-            onPress={() => router.push("/feedback")}
-            className="px-4 py-2 flex-row justify-between border border-t-0 border-zinc-700"
-          >
-            <Text className="text-zinc-300 font-rRegular">Feedback</Text>
-            <Image
-              source={icons.next}
-              className="h-7 w-7"
-              resizeMode="contain"
-              tintColor="#d4d4d8"
-            />
-          </PlatformPressable>
-          <PlatformPressable
-            onPress={() => router.push("/reportIssue")}
-            className="px-4 py-2 flex-row justify-between border border-t-0 border-zinc-700"
-          >
-            <Text className="text-zinc-300 font-rRegular">Report an Issue</Text>
-            <Image
-              source={icons.next}
-              className="h-7 w-7"
-              resizeMode="contain"
-              tintColor="#d4d4d8"
-            />
-          </PlatformPressable>
+
           <PlatformPressable
             onPress={handleLogout}
             disabled={logingOut}

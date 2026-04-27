@@ -41,10 +41,6 @@ export default function ScreensLayout() {
         options={{ animation: "slide_from_right" }}
       />
       <Stack.Screen
-        name="settings"
-        options={{ animation: "slide_from_bottom" }}
-      />
-      <Stack.Screen
         name="viewConversation"
         options={{ animation: "slide_from_right" }}
       />

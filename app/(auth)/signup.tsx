@@ -116,32 +116,6 @@ const Signup = () => {
             )}
           </PlatformPressable>
 
-          <View className="flex w-full items-center justify-center my-5">
-            <View className="w-full h-[0.5px] bg-zinc-800 absolute self-center" />
-            <Text className="text-xs text-zinc-500 px-3 bg-backgroundColor">
-              Or authorize with
-            </Text>
-          </View>
-
-          <View className="flex-row gap-3 items-center">
-            <PlatformPressable className="flex-1 py-3 justify-center items-center flex-row border-zinc-800 rounded-xl bg-light-black/80 border gap-2">
-              <Image
-                source={icons.google}
-                className="h-6 w-6"
-                resizeMode="contain"
-              />
-              <Text className="text-zinc-300 font-rSemibold">Google</Text>
-            </PlatformPressable>
-            <PlatformPressable className="flex-1 py-3 justify-center items-center flex-row border-zinc-800 rounded-xl bg-light-black/80 border gap-2">
-              <Image
-                source={icons.facebook}
-                className="h-6 w-6"
-                resizeMode="contain"
-              />
-              <Text className="text-zinc-300 font-rSemibold">Facebook</Text>
-            </PlatformPressable>
-          </View>
-
           <View className="flex-row gap-1 mt-2 items-center">
             <Text className="text-zinc-500 font-rRegular text-sm">
               Already have an account?
