@@ -12,7 +12,9 @@ import { useEffect, useRef } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import icons from "../../constants/icons";
+import { mapTileStyleDark } from "../../styles/mapTileStyle";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -28,45 +30,47 @@ interface FactorLocation {
   lon: number;
 }
 
-interface DemographicData {
-  population_2020: number;
-  avg_family_income_php: number;
-  pop_density_per_km2: number;
-  growth_rate_pct: number;
-  working_age_pct: number;
-  youth_pct: number;
-  senior_pct: number;
-  purchasing_power_b_php: number;
+interface DominantAmenity {
+  amenity: string;
+  centroid_weight: number;
 }
 
-interface DemographicDetails {
-  city: string;
-  overall_demographic_score: number;
-  rank: number;
-  total_cities: number;
-  market_archetype: string;
-  demographics: DemographicData;
-  insights: string[];
+interface BestCluster {
+  cluster_id: number;
+  similarity: number;
+  dominant_amenities: DominantAmenity[];
+  label: string;
+}
+
+interface FactorContribution {
+  amenity: string;
+  normalized_contribution: number;
+  explanation: string;
+}
+
+interface EnvironmentDetails {
+  amenity: string;
+  similarity_score: number;
+  best_cluster: BestCluster;
+  top_factors: TopFactor[];
+  factor_locations: Record<string, FactorLocation[]>;
+  breakdown: {
+    score_decomposition: { interpretation: string };
+    factor_contributions: FactorContribution[];
+  };
 }
 
 interface EvaluateResult {
   finalScore: number;
   floodScore: number;
   environmentScore: number;
-  demographicScore: number;
   details: {
-    environment: {
-      amenity: string;
-      factor_locations: Record<string, FactorLocation[]>;
-      similarity_score: number;
-      top_factors: TopFactor[];
-    };
+    environment: EnvironmentDetails;
     flood: {
       flood_risk_score: number;
       lat: number;
       lon: number;
     };
-    demographic: DemographicDetails | null;
   };
 }
 
@@ -94,6 +98,13 @@ const AMENITY_ICONS: Record<string, string> = {
   "vape shop": "💨",
   "hardware store": "🔧",
   pharmacy: "💊",
+  restaurant: "🍽",
+  "coffee shop": "☕",
+  "clothing store": "👗",
+  hotel: "🏨",
+  hostel: "🛏",
+  pub: "🍺",
+  "bar and grill": "🍖",
 };
 
 const RELEVANCE_COLORS = [
@@ -156,12 +167,6 @@ function ScoreRing({
       </View>
       <View style={styles.ringInfo}>
         <Text style={styles.ringTitle}>{label}</Text>
-        <Text style={styles.ringBusiness} numberOfLines={1}>
-          Best for:{" "}
-          <Text style={{ color: "#9d7ff4" }}>
-            {amenityType.charAt(0).toUpperCase() + amenityType.slice(1)}
-          </Text>
-        </Text>
       </View>
     </View>
   );
@@ -268,138 +273,245 @@ function AmenityChip({
   );
 }
 
-// ─── DemographicsSection ──────────────────────────────────────────────────────
+// ─── BestClusterCard ──────────────────────────────────────────────────────────
 
-function DemographicsSection({ demo }: { demo: DemographicDetails }) {
-  const d = demo.demographics;
+function BestClusterCard({ cluster }: { cluster: BestCluster }) {
+  const similarityPct = Math.round(cluster.similarity * 100);
+  const top3 = cluster.dominant_amenities.slice(0, 3);
 
-  const formatIncome = (php: number) => {
-    if (php >= 1_000_000) return `₱${(php / 1_000_000).toFixed(2)}M`;
-    if (php >= 1_000) return `₱${(php / 1_000).toFixed(0)}K`;
-    return `₱${php}`;
-  };
+  return (
+    <View style={clusterStyles.card}>
+      <View style={clusterStyles.header}>
+        <View style={clusterStyles.iconBox}>
+          <Text style={{ fontSize: 18 }}>🏘</Text>
+        </View>
+        <View style={{ flex: 1 }}>
+          <Text style={clusterStyles.title}>Best Matching Neighborhood</Text>
+          <Text style={clusterStyles.label} numberOfLines={2}>
+            {cluster.label}
+          </Text>
+        </View>
+        <View style={clusterStyles.badge}>
+          <Text style={clusterStyles.badgeText}>{similarityPct}%</Text>
+          <Text style={clusterStyles.badgeSub}>match</Text>
+        </View>
+      </View>
 
-  const formatPop = (n: number) => {
-    if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(2)}M`;
-    if (n >= 1_000) return `${(n / 1_000).toFixed(0)}K`;
-    return `${n}`;
-  };
+      <View style={clusterStyles.amenityRow}>
+        {top3.map((a, i) => {
+          const color = RELEVANCE_COLORS[i % RELEVANCE_COLORS.length];
+          const icon = AMENITY_ICONS[a.amenity.toLowerCase()] ?? "📍";
+          const weight = Math.round(a.centroid_weight * 100);
+          return (
+            <View
+              key={a.amenity}
+              style={[
+                clusterStyles.amenityPill,
+                { borderColor: color + "40", backgroundColor: color + "12" },
+              ]}
+            >
+              <Text style={{ fontSize: 13 }}>{icon}</Text>
+              <View>
+                <Text style={[clusterStyles.amenityName, { color }]}>
+                  {a.amenity.charAt(0).toUpperCase() + a.amenity.slice(1)}
+                </Text>
+                <Text style={clusterStyles.amenityWeight}>
+                  {weight}% weight
+                </Text>
+              </View>
+            </View>
+          );
+        })}
+      </View>
+    </View>
+  );
+}
 
-  const archetypeColor =
-    demo.market_archetype === "Premium Urban"
-      ? "#9d7ff4"
-      : demo.market_archetype === "Dense Urban"
-        ? "#4f9ef5"
-        : demo.market_archetype === "Emerging Urban"
-          ? "#f5a623"
-          : "#3ecf8e";
+// ─── FactorContributionsSection ───────────────────────────────────────────────
 
-  const statItems = [
-    { label: "Population", value: formatPop(d.population_2020), emoji: "👥" },
-    {
-      label: "Avg. Income",
-      value: formatIncome(d.avg_family_income_php),
-      emoji: "💰",
-    },
-    {
-      label: "Density /km²",
-      value: `${(d.pop_density_per_km2 / 1000).toFixed(1)}K`,
-      emoji: "🏙",
-    },
-    { label: "Growth Rate", value: `+${d.growth_rate_pct}%`, emoji: "📈" },
-  ];
-
-  const ageItems = [
-    { label: "Youth", pct: d.youth_pct, color: "#4f9ef5" },
-    { label: "Working Age", pct: d.working_age_pct, color: "#3ecf8e" },
-    { label: "Senior", pct: d.senior_pct, color: "#f5a623" },
-  ];
+function FactorContributionsSection({
+  amenityType,
+  contributions,
+}: {
+  amenityType: string;
+  contributions: FactorContribution[];
+}) {
+  const label = amenityType.charAt(0).toUpperCase() + amenityType.slice(1);
 
   return (
     <View style={styles.section}>
-      {/* Section header */}
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>Demographics</Text>
-        <View
-          style={[
-            demoStyles.archetypeBadge,
-            {
-              borderColor: archetypeColor + "55",
-              backgroundColor: archetypeColor + "15",
-            },
-          ]}
-        >
-          <Text style={[demoStyles.archetypeText, { color: archetypeColor }]}>
-            {demo.market_archetype}
-          </Text>
-        </View>
+        <Text style={styles.sectionTitle}>
+          Factors considered for{" "}
+          <Text style={{ color: "#9d7ff4" }}>{label}</Text>
+        </Text>
+      </View>
+      <View style={styles.card}>
+        {contributions.map((fc, i) => {
+          const color = RELEVANCE_COLORS[i % RELEVANCE_COLORS.length];
+          const icon = AMENITY_ICONS[fc.amenity.toLowerCase()] ?? "📍";
+          const pct = Math.round(fc.normalized_contribution * 100);
+          return (
+            <View key={fc.amenity} style={fcStyles.row}>
+              <View
+                style={[fcStyles.iconBox, { backgroundColor: color + "1a" }]}
+              >
+                <Text style={{ fontSize: 15 }}>{icon}</Text>
+              </View>
+              <View style={{ flex: 1, gap: 4 }}>
+                <View style={fcStyles.rowTop}>
+                  <Text style={fcStyles.amenityName}>
+                    {fc.amenity.charAt(0).toUpperCase() + fc.amenity.slice(1)}
+                  </Text>
+                  <Text style={[fcStyles.pct, { color }]}>{pct}%</Text>
+                </View>
+                <Text style={fcStyles.explanation}>{fc.explanation}</Text>
+                <View style={fcStyles.track}>
+                  <View
+                    style={[
+                      fcStyles.fill,
+                      { width: `${pct}%`, backgroundColor: color },
+                    ]}
+                  />
+                </View>
+              </View>
+            </View>
+          );
+        })}
+      </View>
+    </View>
+  );
+}
+
+// ─── FactorLocationsMap ───────────────────────────────────────────────────────
+
+function FactorLocationsMap({
+  centerLat,
+  centerLng,
+  factorLocations,
+}: {
+  centerLat: number;
+  centerLng: number;
+  factorLocations: Record<string, FactorLocation[]>;
+}) {
+  const mapRef = useRef<MapView>(null);
+
+  // Flatten all factor locations into a pin list
+  const pins = Object.entries(factorLocations).flatMap(([amenity, locs]) =>
+    locs.map((loc) => ({ amenity, ...loc })),
+  );
+
+  if (pins.length === 0) return null;
+
+  // Stable color map: amenity key → color
+  const amenityKeys = Object.keys(factorLocations);
+  const amenityColorMap: Record<string, string> = {};
+  amenityKeys.forEach((key, i) => {
+    amenityColorMap[key] = RELEVANCE_COLORS[i % RELEVANCE_COLORS.length];
+  });
+
+  // ── Fixed 250m radius viewport ─────────────────────────────────────────────
+  // 250m + 20% padding = 300m effective radius
+  // 1 degree lat ≈ 111,000m  →  300m * 2 / 111000 ≈ 0.0054
+  // lng delta scaled by cos(lat) to keep the view square on screen
+  const RADIUS_M = 100; // 250m + padding
+  const latDelta = (RADIUS_M * 2) / 111000;
+  const lngDelta = latDelta / Math.cos((centerLat * Math.PI) / 180);
+
+  const initialRegion = {
+    latitude: centerLat,
+    longitude: centerLng,
+    latitudeDelta: latDelta,
+    longitudeDelta: lngDelta,
+  };
+
+  // Only keep tracksViewChanges=true when there are few pins (perf guard)
+  const trackPins = pins.length < 40;
+
+  return (
+    <View style={styles.section}>
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>Relevance Factor Locations</Text>
+        <Text style={styles.sectionCount}>{pins.length} pins</Text>
       </View>
 
-      {/* City rank banner */}
-      <View style={demoStyles.rankBanner}>
-        <View style={demoStyles.rankLeft}>
-          <Text style={demoStyles.rankEmoji}>🏙</Text>
-          <View>
-            <Text style={demoStyles.rankCity}>{demo.city}</Text>
-            <Text style={demoStyles.rankSub}>NCR Demographic Rank</Text>
-          </View>
-        </View>
-        <View style={demoStyles.rankRight}>
-          <Text style={demoStyles.rankNum}>#{demo.rank}</Text>
-          <Text style={demoStyles.rankOf}>of {demo.total_cities}</Text>
-        </View>
-      </View>
-
-      {/* Stat grid */}
-      <View style={demoStyles.statGrid}>
-        {statItems.map((s) => (
-          <View key={s.label} style={demoStyles.statCell}>
-            <Text style={demoStyles.statEmoji}>{s.emoji}</Text>
-            <Text style={demoStyles.statValue}>{s.value}</Text>
-            <Text style={demoStyles.statLabel}>{s.label}</Text>
-          </View>
-        ))}
-      </View>
-
-      {/* Age structure */}
-      <View style={demoStyles.ageCard}>
-        <Text style={demoStyles.ageTitle}>Age Structure</Text>
-        <View style={demoStyles.ageBar}>
-          {ageItems.map((a) => (
-            <View
-              key={a.label}
-              style={[
-                demoStyles.ageBarSegment,
-                { flex: a.pct, backgroundColor: a.color },
-              ]}
+      {/* Legend */}
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        <View style={styles.chipRow}>
+          {amenityKeys.map((key, i) => (
+            <AmenityChip
+              key={key}
+              label={key.charAt(0).toUpperCase() + key.slice(1)}
+              count={factorLocations[key].length}
+              color={RELEVANCE_COLORS[i % RELEVANCE_COLORS.length]}
             />
           ))}
         </View>
-        <View style={demoStyles.ageLegend}>
-          {ageItems.map((a) => (
-            <View key={a.label} style={demoStyles.ageLegendItem}>
-              <View style={[demoStyles.ageDot, { backgroundColor: a.color }]} />
-              <Text style={demoStyles.ageLegendLabel}>{a.label}</Text>
-              <Text style={[demoStyles.ageLegendPct, { color: a.color }]}>
-                {a.pct.toFixed(1)}%
-              </Text>
+      </ScrollView>
+
+      {/* Map */}
+      <View style={mapStyles.wrapper}>
+        <MapView
+          ref={mapRef}
+          provider={PROVIDER_GOOGLE}
+          style={mapStyles.map}
+          customMapStyle={mapTileStyleDark}
+          userInterfaceStyle="dark"
+          region={initialRegion}
+          scrollEnabled
+          zoomEnabled
+          rotateEnabled={false}
+          pitchEnabled={false}
+          showsCompass={false}
+          showsBuildings
+        >
+          {/* ── Factor pins (rendered first so center sits on top) ── */}
+          {pins.map((pin, i) => {
+            const color = amenityColorMap[pin.amenity] ?? "#9d7ff4";
+            const emoji = AMENITY_ICONS[pin.amenity.toLowerCase()] ?? "📍";
+
+            return (
+              <Marker
+                key={`factor-${pin.amenity}-${i}`}
+                coordinate={{ latitude: pin.lat, longitude: pin.lon }}
+                anchor={{ x: 0.5, y: 1 }}
+                tracksViewChanges={trackPins}
+              >
+                <View style={pinStyles.wrapper}>
+                  <View style={[pinStyles.bubble, { borderColor: color }]}>
+                    <Text style={pinStyles.emoji}>{emoji}</Text>
+                  </View>
+                  <View style={[pinStyles.tail, { borderTopColor: color }]} />
+                  <View style={[pinStyles.dot, { backgroundColor: color }]} />
+                </View>
+              </Marker>
+            );
+          })}
+
+          {/* ── Center / evaluated location (highest zIndex) ── */}
+          <Marker
+            coordinate={{ latitude: centerLat, longitude: centerLng }}
+            anchor={{ x: 0.5, y: 1 }}
+            zIndex={999}
+            tracksViewChanges={false}
+          >
+            <View style={mapStyles.centerWrapper}>
+              <View style={mapStyles.centerBubble}>
+                <Text style={mapStyles.centerEmoji}>📌</Text>
+              </View>
+              <View style={mapStyles.centerTail} />
+              <View style={mapStyles.centerDot} />
             </View>
-          ))}
+          </Marker>
+        </MapView>
+
+        {/* Overlay count label */}
+        <View style={mapStyles.overlayLabel} pointerEvents="none">
+          <Text style={mapStyles.overlayText}>
+            {pins.length} nearby amenities plotted
+          </Text>
         </View>
       </View>
-
-      {/* Insights */}
-      {demo.insights?.length > 0 && (
-        <View style={demoStyles.insightsBox}>
-          <Text style={demoStyles.insightsTitle}>📊 Key Insights</Text>
-          {demo.insights.map((insight, i) => (
-            <View key={i} style={demoStyles.insightRow}>
-              <View style={demoStyles.insightDot} />
-              <Text style={demoStyles.insightText}>{insight}</Text>
-            </View>
-          ))}
-        </View>
-      )}
     </View>
   );
 }
@@ -464,22 +576,20 @@ export default function EvaluateResultScreen() {
     save();
   }, []);
 
-  const {
-    finalScore,
-    floodScore,
-    environmentScore,
-    demographicScore,
-    details,
-  } = result;
-  const { top_factors = [], factor_locations = {} } =
-    details?.environment ?? {};
+  const { finalScore, floodScore, environmentScore, details } = result;
+  const env = details?.environment;
+  const top_factors = env?.top_factors ?? [];
+  const factor_locations = env?.factor_locations ?? {};
+  const best_cluster = env?.best_cluster ?? null;
+  const factor_contributions = env?.breakdown?.factor_contributions ?? [];
   const floodRisk = details?.flood?.flood_risk_score ?? 0;
+
+  const centerLat = parseFloat(params.lat ?? "0");
+  const centerLng = parseFloat(params.lng ?? "0");
 
   const allAmenities = Object.entries(factor_locations).map(([key, locs]) => ({
     label: key.charAt(0).toUpperCase() + key.slice(1),
     count: locs.length,
-    color:
-      RELEVANCE_COLORS[Math.floor(Math.random() * RELEVANCE_COLORS.length)],
   }));
 
   const floodSafe = floodRisk === 0;
@@ -500,8 +610,7 @@ export default function EvaluateResultScreen() {
             {amenityType.charAt(0).toUpperCase() + amenityType.slice(1)}
           </Text>
           <Text style={styles.headerSub}>
-            {parseFloat(params.lat ?? "0").toFixed(4)}° N,{" "}
-            {parseFloat(params.lng ?? "0").toFixed(4)}° E
+            {centerLat.toFixed(4)}° N, {centerLng.toFixed(4)}° E
           </Text>
         </View>
         <View
@@ -541,22 +650,6 @@ export default function EvaluateResultScreen() {
               color="#9d7ff4"
               display={`${Math.round(environmentScore * 100)}%`}
             />
-            <SubScorePill
-              label="Flood Risk"
-              value={floodSafe ? 1 : 1 - floodRisk}
-              color="#3ecf8e"
-              display={floodSafe ? "Safe" : "Risk"}
-            />
-            <SubScorePill
-              label="Demographic"
-              value={demographicScore > 0 ? demographicScore : 0.05}
-              color="#f5a623"
-              display={
-                demographicScore > 0
-                  ? `${Math.round(demographicScore * 100)}%`
-                  : "N/A"
-              }
-            />
           </View>
         </View>
 
@@ -591,6 +684,18 @@ export default function EvaluateResultScreen() {
           </View>
         </View>
 
+        {/* Best Cluster */}
+        {best_cluster && <BestClusterCard cluster={best_cluster} />}
+
+        {/* Factor Locations Map */}
+        {Object.keys(factor_locations).length > 0 && (
+          <FactorLocationsMap
+            centerLat={centerLat}
+            centerLng={centerLng}
+            factorLocations={factor_locations}
+          />
+        )}
+
         {/* Top Factors */}
         {top_factors.length > 0 && (
           <View style={styles.section}>
@@ -608,44 +713,13 @@ export default function EvaluateResultScreen() {
           </View>
         )}
 
-        {/* All Amenities */}
-        {allAmenities.length > 0 && (
-          <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Amenities Detected</Text>
-              <Text style={styles.sectionCount}>
-                {allAmenities.length} types
-              </Text>
-            </View>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              <View style={styles.chipRow}>
-                {allAmenities.map((a, i) => (
-                  <AmenityChip
-                    key={i}
-                    label={a.label}
-                    count={a.count}
-                    color={RELEVANCE_COLORS[i % RELEVANCE_COLORS.length]}
-                  />
-                ))}
-              </View>
-            </ScrollView>
-          </View>
+        {/* Factor Contributions */}
+        {factor_contributions.length > 0 && (
+          <FactorContributionsSection
+            amenityType={amenityType}
+            contributions={factor_contributions}
+          />
         )}
-
-        {/* Demographics */}
-        {details?.demographic && (
-          <DemographicsSection demo={details.demographic} />
-        )}
-
-        {/* CTA */}
-        <View style={styles.ctaRow}>
-          <TouchableOpacity style={styles.ctaSecondary}>
-            <Text style={styles.ctaSecondaryText}>Save Report</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.ctaPrimary}>
-            <Text style={styles.ctaPrimaryText}>Pin Landmarks</Text>
-          </TouchableOpacity>
-        </View>
       </ScrollView>
     </View>
   );
@@ -843,121 +917,195 @@ const styles = StyleSheet.create({
   ctaPrimaryText: { fontSize: 13, fontWeight: "700", color: "#fff" },
 });
 
-const demoStyles = StyleSheet.create({
-  archetypeBadge: {
-    borderWidth: 1,
-    borderRadius: 6,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-  },
-  archetypeText: { fontSize: 10, fontWeight: "700", letterSpacing: 0.3 },
+// ─── Map styles ───────────────────────────────────────────────────────────────
 
-  rankBanner: {
-    backgroundColor: "#1a1820",
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.08)",
-    padding: 14,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  rankLeft: { flexDirection: "row", alignItems: "center", gap: 10 },
-  rankEmoji: { fontSize: 22 },
-  rankCity: { fontSize: 13, fontWeight: "600", color: "#e8e6f0" },
-  rankSub: { fontSize: 10, color: "#7a7890", marginTop: 1 },
-  rankRight: { alignItems: "flex-end" },
-  rankNum: { fontSize: 22, fontWeight: "800", color: "#f5a623" },
-  rankOf: { fontSize: 10, color: "#7a7890" },
-
-  statGrid: {
-    flexDirection: "row",
-    gap: 8,
-  },
-  statCell: {
-    flex: 1,
-    backgroundColor: "#1a1820",
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.06)",
-    padding: 10,
-    alignItems: "center",
-    gap: 3,
-  },
-  statEmoji: { fontSize: 16 },
-  statValue: { fontSize: 13, fontWeight: "700", color: "#e8e6f0" },
-  statLabel: { fontSize: 9, color: "#7a7890", textAlign: "center" },
-
-  ageCard: {
-    backgroundColor: "#1a1820",
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.08)",
-    padding: 14,
-    gap: 10,
-  },
-  ageTitle: {
-    fontSize: 11,
-    fontWeight: "600",
-    color: "#7a7890",
-    textTransform: "uppercase",
-    letterSpacing: 0.6,
-  },
-  ageBar: {
-    flexDirection: "row",
-    height: 8,
-    borderRadius: 4,
+const mapStyles = StyleSheet.create({
+  wrapper: {
+    borderRadius: 16,
     overflow: "hidden",
-    gap: 2,
+    height: 300,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.08)",
+    position: "relative",
   },
-  ageBarSegment: { borderRadius: 4 },
-  ageLegend: { flexDirection: "row", justifyContent: "space-between" },
-  ageLegendItem: { flexDirection: "row", alignItems: "center", gap: 5 },
-  ageDot: { width: 7, height: 7, borderRadius: 4 },
-  ageLegendLabel: { fontSize: 10, color: "#7a7890" },
-  ageLegendPct: { fontSize: 11, fontWeight: "700" },
-
-  powerRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
+  map: {
+    width: "100%",
+    height: "100%",
+  },
+  overlayLabel: {
+    position: "absolute",
+    bottom: 10,
+    left: 10,
+    backgroundColor: "rgba(15,14,16,0.75)",
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.08)",
+  },
+  overlayText: {
+    fontSize: 10,
+    color: "#7a7890",
+  },
+  centerWrapper: { alignItems: "center" },
+  centerBubble: {
     backgroundColor: "#1a1820",
+    borderWidth: 2,
+    borderColor: "#9d7ff4",
     borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.06)",
-    padding: 12,
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    shadowColor: "#9d7ff4",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.6,
+    shadowRadius: 6,
+    elevation: 8,
   },
-  powerEmoji: { fontSize: 20 },
-  powerLabel: { fontSize: 10, color: "#7a7890" },
-  powerValue: {
-    fontSize: 14,
-    fontWeight: "700",
-    color: "#3ecf8e",
-    marginTop: 1,
+  // ↑ Bigger, more prominent center pin
+  centerEmoji: { fontSize: 18 },
+  centerTail: {
+    width: 0,
+    height: 0,
+    borderLeftWidth: 6,
+    borderRightWidth: 6,
+    borderTopWidth: 7,
+    borderLeftColor: "transparent",
+    borderRightColor: "transparent",
+    borderTopColor: "#9d7ff4",
+    marginTop: -1,
   },
+  centerDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: "#9d7ff4",
+    marginTop: 2,
+  },
+});
 
-  insightsBox: {
-    backgroundColor: "#f5a62308",
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "#f5a62325",
-    padding: 14,
-    gap: 8,
+// ─── Pin styles ───────────────────────────────────────────────────────────────
+
+const pinStyles = StyleSheet.create({
+  wrapper: { alignItems: "center" },
+  bubble: {
+    backgroundColor: "#131215",
+    borderWidth: 1.5,
+    borderRadius: 10,
+    paddingHorizontal: 6,
+    paddingVertical: 4,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.45,
+    shadowRadius: 4,
+    elevation: 5,
   },
-  insightsTitle: {
-    fontSize: 11,
-    fontWeight: "700",
-    color: "#f5a623",
-    marginBottom: 2,
+  // Slightly larger emoji so it's readable at street-zoom level
+  emoji: { fontSize: 15 },
+  tail: {
+    width: 0,
+    height: 0,
+    borderLeftWidth: 5,
+    borderRightWidth: 5,
+    borderTopWidth: 6,
+    borderLeftColor: "transparent",
+    borderRightColor: "transparent",
+    marginTop: -1,
   },
-  insightRow: { flexDirection: "row", gap: 8, alignItems: "flex-start" },
-  insightDot: {
+  dot: {
     width: 5,
     height: 5,
     borderRadius: 3,
-    backgroundColor: "#f5a623",
-    marginTop: 5,
-    flexShrink: 0,
+    marginTop: 2,
   },
-  insightText: { fontSize: 12, color: "#a09cb0", lineHeight: 18, flex: 1 },
+});
+
+// ─── Cluster / fc styles ──────────────────────────────────────────────────────
+
+const clusterStyles = StyleSheet.create({
+  card: {
+    backgroundColor: "#1a1820",
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.08)",
+    padding: 14,
+    gap: 12,
+  },
+  header: { flexDirection: "row", alignItems: "flex-start", gap: 10 },
+  iconBox: {
+    width: 38,
+    height: 38,
+    borderRadius: 10,
+    backgroundColor: "#9d7ff41a",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  title: {
+    fontSize: 11,
+    fontWeight: "500",
+    color: "#7a7890",
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+    marginBottom: 2,
+  },
+  label: { fontSize: 12, color: "#c8c4d8", lineHeight: 17 },
+  badge: {
+    alignItems: "center",
+    backgroundColor: "#9d7ff41a",
+    borderWidth: 1,
+    borderColor: "#9d7ff440",
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  badgeText: { fontSize: 15, fontWeight: "800", color: "#9d7ff4" },
+  badgeSub: { fontSize: 9, color: "#9d7ff4", opacity: 0.7 },
+  amenityRow: { flexDirection: "row", gap: 6, flexWrap: "wrap" },
+  amenityPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+    flex: 1,
+    minWidth: "30%",
+  },
+  amenityName: { fontSize: 11, fontWeight: "600" },
+  amenityWeight: { fontSize: 9, color: "#7a7890", marginTop: 1 },
+});
+
+const fcStyles = StyleSheet.create({
+  row: {
+    flexDirection: "row",
+    gap: 10,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.05)",
+  },
+  iconBox: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+    marginTop: 2,
+  },
+  rowTop: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  amenityName: { fontSize: 12, fontWeight: "600", color: "#e8e6f0" },
+  pct: { fontSize: 12, fontWeight: "700" },
+  explanation: { fontSize: 11, color: "#9a96aa", lineHeight: 16 },
+  track: {
+    height: 3,
+    borderRadius: 2,
+    backgroundColor: "#2a2735",
+    overflow: "hidden",
+    marginTop: 2,
+  },
+  fill: { height: "100%", borderRadius: 2 },
 });

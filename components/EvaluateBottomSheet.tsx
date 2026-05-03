@@ -59,10 +59,9 @@ const BUSINESS_TYPES: { label: string; emoji: string; value: string }[] = [
 const WEIGHT_META = {
   environment: { label: "Environment", emoji: "🏪", color: "#9d7ff4" },
   flood: { label: "Flood Risk", emoji: "🌊", color: "#4f9ef5" },
-  demographic: { label: "Demographics", emoji: "👥", color: "#f5a623" },
 } as const;
 
-const DEFAULT_WEIGHTS = { environment: 34, flood: 33, demographic: 33 };
+const DEFAULT_WEIGHTS = { environment: 50, flood: 50 };
 
 const SCORE_COLOR = (s: number) =>
   s >= 0.75 ? "#3ecf8e" : s >= 0.5 ? "#f5a623" : "#f06060";
@@ -137,7 +136,7 @@ function EvaluateBottomSheet() {
     ? customInput.trim()
     : selectedBusinessType;
 
-  const totalWeight = weights.environment + weights.flood + weights.demographic;
+  const totalWeight = weights.environment + weights.flood;
   const weightsOff = totalWeight !== 100;
 
   useEffect(() => {
@@ -254,10 +253,9 @@ function EvaluateBottomSheet() {
     console.log(coords);
 
     // Normalize so they always sum to 100 on submit
-    const total = weights.environment + weights.flood + weights.demographic;
-    const wEnv = total > 0 ? weights.environment / total : 1 / 3;
-    const wFld = total > 0 ? weights.flood / total : 1 / 3;
-    const wDem = total > 0 ? weights.demographic / total : 1 / 3;
+    const total = weights.environment + weights.flood;
+    const wEnv = total > 0 ? weights.environment / total : 0.5;
+    const wFld = total > 0 ? weights.flood / total : 0.5;
 
     try {
       const { data } = await api.post(
@@ -265,8 +263,7 @@ function EvaluateBottomSheet() {
           `?lat=${coords.lat}&lon=${coords.lng}` +
           `&amenityType=${encodeURIComponent(activeBusinessType)}` +
           `&wEnvironment=${wEnv.toFixed(3)}` +
-          `&wFlood=${wFld.toFixed(3)}` +
-          `&wDemographic=${wDem.toFixed(3)}`,
+          `&wFlood=${wFld.toFixed(3)}`,
       );
 
       const result = data.data;
