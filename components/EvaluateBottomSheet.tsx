@@ -56,13 +56,6 @@ const BUSINESS_TYPES: { label: string; emoji: string; value: string }[] = [
   { label: "Car Dealer", emoji: "🚗", value: "car dealer" },
 ];
 
-const WEIGHT_META = {
-  environment: { label: "Environment", emoji: "🏪", color: "#9d7ff4" },
-  flood: { label: "Flood Risk", emoji: "🌊", color: "#4f9ef5" },
-} as const;
-
-const DEFAULT_WEIGHTS = { environment: 50, flood: 50 };
-
 const SCORE_COLOR = (s: number) =>
   s >= 0.75 ? "#3ecf8e" : s >= 0.5 ? "#f5a623" : "#f06060";
 const SCORE_LABEL = (s: number) =>
@@ -125,19 +118,15 @@ function EvaluateBottomSheet() {
   const [addressLoading, setAddressLoading] = useState(false);
   const [recents, setRecents] = useState<RecentEval[]>([]);
 
-  // Independent sliders — each 0–100, no coupling
-  const [weights, setWeights] = useState({ ...DEFAULT_WEIGHTS });
+  const [environmentWeight, setEnvironmentWeight] = useState(50);
+  const floodWeight = 100 - environmentWeight;
 
   const router = useRouter();
   const isBookmarked = !!bookmarkId;
 
-  // The actual business type to evaluate: custom input wins if filled
   const activeBusinessType = showCustomInput
     ? customInput.trim()
     : selectedBusinessType;
-
-  const totalWeight = weights.environment + weights.flood;
-  const weightsOff = totalWeight !== 100;
 
   useEffect(() => {
     if (!coords) return;
@@ -215,7 +204,7 @@ function EvaluateBottomSheet() {
       setShowCustomInput(false);
       setAddress(null);
       setRecents([]);
-      setWeights({ ...DEFAULT_WEIGHTS });
+      setEnvironmentWeight(50);
     }
   }, []);
 
@@ -246,16 +235,12 @@ function EvaluateBottomSheet() {
     }
   };
 
-  // Normalize weights to sum to 100 proportionally, then submit
   const handleEvaluate = async () => {
     if (!coords || !activeBusinessType) return;
     setEvaluating(true);
-    console.log(coords);
 
-    // Normalize so they always sum to 100 on submit
-    const total = weights.environment + weights.flood;
-    const wEnv = total > 0 ? weights.environment / total : 0.5;
-    const wFld = total > 0 ? weights.flood / total : 0.5;
+    const wEnv = environmentWeight / 100;
+    const wFld = floodWeight / 100;
 
     try {
       const { data } = await api.post(
@@ -483,81 +468,62 @@ function EvaluateBottomSheet() {
         {/* ── Score Priorities ──────────────────────────────────────── */}
         <View style={[styles.sectionHeader]}>
           <Text style={styles.sectionTitle}>Score Priorities</Text>
-          <TouchableOpacity onPress={() => setWeights({ ...DEFAULT_WEIGHTS })}>
+          <TouchableOpacity onPress={() => setEnvironmentWeight(50)}>
             <Text style={styles.clearBtn}>Reset</Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.weightsCard}>
           <Text style={styles.weightsHint}>
-            Set how much each factor matters. They're independent — on evaluate
-            they'll be normalized automatically.
+            Set how much each factor matters.
           </Text>
 
-          {(Object.keys(weights) as (keyof typeof weights)[]).map((key) => {
-            const meta = WEIGHT_META[key];
-            return (
-              <View key={key} style={styles.sliderRow}>
-                <View style={styles.sliderMeta}>
-                  <Text style={styles.sliderEmoji}>{meta.emoji}</Text>
-                  <Text style={styles.sliderLabel}>{meta.label}</Text>
-                  <View
-                    style={[
-                      styles.sliderBadge,
-                      {
-                        backgroundColor: meta.color + "22",
-                        borderColor: meta.color + "55",
-                      },
-                    ]}
-                  >
-                    <Text
-                      style={[styles.sliderBadgeText, { color: meta.color }]}
-                    >
-                      {weights[key]}%
-                    </Text>
-                  </View>
-                </View>
-                <Slider
-                  style={styles.slider}
-                  minimumValue={0}
-                  maximumValue={100}
-                  step={1}
-                  value={weights[key]}
-                  onValueChange={(v) =>
-                    setWeights((prev) => ({ ...prev, [key]: v }))
-                  }
-                  minimumTrackTintColor={meta.color}
-                  maximumTrackTintColor="#27272a"
-                  thumbTintColor={meta.color}
-                />
+          <View style={styles.sliderRow}>
+            <View style={styles.sliderMeta}>
+              <Text style={styles.sliderEmoji}>🏪</Text>
+              <Text style={styles.sliderLabel}>Environment</Text>
+              <View style={styles.sliderBadge}>
+                <Text style={styles.sliderBadgeText}>{environmentWeight}%</Text>
               </View>
-            );
-          })}
 
-          {/* Proportional bar */}
-          <View style={styles.weightBar}>
-            {(Object.keys(weights) as (keyof typeof weights)[]).map((key) => (
-              <View
-                key={key}
-                style={[
-                  styles.weightBarSegment,
-                  {
-                    flex: weights[key] || 0.5,
-                    backgroundColor: WEIGHT_META[key].color,
-                  },
-                ]}
-              />
-            ))}
+              <Text style={{ marginHorizontal: 6, color: "#52525b" }}>|</Text>
+
+              <Text style={styles.sliderEmoji}>🌊</Text>
+              <Text style={styles.sliderLabel}>Flood Risk</Text>
+              <View style={styles.sliderBadge}>
+                <Text style={styles.sliderBadgeText}>🌊 {floodWeight}%</Text>
+              </View>
+            </View>
+
+            <Slider
+              style={styles.slider}
+              minimumValue={0}
+              maximumValue={100}
+              step={1}
+              value={environmentWeight}
+              onValueChange={setEnvironmentWeight}
+              minimumTrackTintColor="#9d7ff4"
+              maximumTrackTintColor="#4f9ef5"
+              thumbTintColor="#fff"
+            />
           </View>
 
-          {weightsOff && (
-            <Text style={styles.weightsSumNote}>
-              Total: {totalWeight}% — will be normalized to 100% on evaluate
-            </Text>
-          )}
+          {/* <View style={styles.weightBar}>
+            <View
+              style={{
+                flex: environmentWeight,
+                backgroundColor: "#9d7ff4",
+              }}
+            />
+            <View
+              style={{
+                flex: floodWeight,
+                backgroundColor: "#4f9ef5",
+              }}
+            />
+          </View> */}
         </View>
 
-        {/* ── Recent Evaluations ────────────────────────────────────── */}
         {recents.length > 0 && (
           <>
             <View style={[styles.sectionHeader, { marginTop: 8 }]}>
@@ -582,7 +548,6 @@ function EvaluateBottomSheet() {
           </>
         )}
 
-        {/* ── Evaluate Button — at the end of scroll ────────────────── */}
         <View style={styles.evaluateSection}>
           {!activeBusinessType && (
             <Text style={styles.evaluateHint}>
@@ -764,8 +729,10 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     paddingHorizontal: 7,
     paddingVertical: 2,
+    borderColor: "#3f3f46",
+    backgroundColor: "#27272a",
   },
-  sliderBadgeText: { fontSize: 11, fontWeight: "700" },
+  sliderBadgeText: { fontSize: 11, fontWeight: "700", color: "#e4e4e7" },
   slider: { width: "100%", height: 36 },
   weightBar: {
     flexDirection: "row",
